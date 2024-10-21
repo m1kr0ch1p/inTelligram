@@ -45,7 +45,7 @@ api_id = ''
 api_hash = ''
 phone_number = ''
 
-# Atualiza o arquivo details e executa a funca collect de channelscraper
+# Atualiza o arquivo details e executa a funca collect de engine
 
 update_details_file(api_id, api_hash, phone_number)
 ip_check()
