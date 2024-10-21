@@ -41,9 +41,38 @@ def ip_check():
 
 #init(autoreset=True)
 
-api_id = ''
-api_hash = ''
-phone_number = ''
+while True:
+    try:
+        api_id = input("Please enter your API ID:\n")
+        print(f'You entered "{api_id}"')
+        confirmation = input('Is this correct? (y/n)')
+        if confirmation.lower() == 'y':
+            print('Updating...')
+            break
+    except:
+        continue
+
+while True:
+    try:
+        api_hash = input("Please enter your API Hash:\n")
+        print(f'You entered "{api_hash}"')
+        confirmation = input('Is this correct? (y/n)')
+        if confirmation.lower() == 'y':
+            print('Updating...')
+            break
+    except:
+        continue
+
+while True:
+    try:
+        phone_number = input("Please enter your phone number:\n")
+        print(f'You entered "{phone_number}"')
+        confirmation = input('Is this correct? (y/n)')
+        if confirmation.lower() == 'y':
+            print('Updating...')
+            break
+    except:
+        continue
 
 # Atualiza o arquivo details e executa a funca collect de engine
 
