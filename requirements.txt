@@ -1,0 +1,13 @@
+json
+requests
+colorama
+asyncio
+pandas
+telethon
+plotly
+matplotlib
+numpy
+wordcloud
+os
+details
+datetime
