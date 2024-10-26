@@ -1,4 +1,4 @@
-json
+jsonlib
 requests
 colorama
 asyncio
@@ -8,6 +8,8 @@ plotly
 matplotlib
 numpy
 wordcloud
-os
+os-sys
 details
 datetime
+csv
+pillow
