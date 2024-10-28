@@ -63,6 +63,42 @@ def users_Metrics(df,ch,dr):
     fig.write_html(fig_html_file)
     #fig.show()
 
+    # Criando grafico de barras para o relatorio
+
+    # Ordenando os usuários por quantidade de mensagens (decrescente)
+    contagem_usuarios_sorted = contagem_usuarios.sort_values('Quantidade_Mensagens', ascending=False)
+    
+    # Pegando os top 20 usuários para melhor visualização
+    top_20 = contagem_usuarios_sorted.head(20)
+    
+    # Criando o gráfico de barras
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    bars = ax.bar(range(len(top_20)), top_20['Quantidade_Mensagens'], align='center')
+    
+    # Configurando o título e labels
+    ax.set_title(f'Top 20 Usuários por Quantidade de Mensagens em {ch}')
+    ax.set_ylabel('Número de Mensagens')
+    ax.set_xlabel('Usuários')
+    
+    # Removendo os ticks do eixo x
+    ax.set_xticks([])
+    
+    # Adicionando os nomes dos top 5 usuários
+    for i, (username, count) in enumerate(zip(top_20['Username'][:10], top_20['Quantidade_Mensagens'][:10])):
+        ax.text(i, count, f'{username}\n({count})', ha='center', va='bottom')
+    
+    # Adicionando uma grade horizontal para melhor leitura
+    ax.yaxis.grid(True, linestyle='--', alpha=0.7)
+    
+    # Ajustando o layout
+    plt.tight_layout()
+    
+    # Salvando o gráfico
+    plt.savefig(f'{dr}/{ch}_top_users_bar_chart.png')
+    plt.close()
+
+
 # cria lista de Usernames
 
 async def usernames_list(df,ch,dr):
