@@ -117,18 +117,18 @@ async def collect():
             # Defines output for files store
             output_directory = f'CaseFiles/{channel_name_filtered}'
 
-            # Verifica se o diretorio ja existe / nomeia o diretorio
+            # Verify or creates directory
             if not os.path.exists(output_directory):
                 os.makedirs(output_directory)
 
-            # nomeia o arquivo
+            # Gives file name
             csv_filename = f'{output_directory}/{channel_name_filtered}_{today}.csv'
             print(f'[+] Scraping content from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
 
-            # Executa a funcao scrape_channel_content com o canal indicado
+            # runs scrape_channel_content function
             content = await scrape_channel_content(channel_name)
 
-            # Armazena os dados do canal em arquivo csv
+            # Store data in a csv file
             if content:
                 df = pd.DataFrame(content, columns=['Text', 'Username', 'First Name', 'Last Name', 'User ID', 'Views', 'message_url'])
                 try:
@@ -141,7 +141,7 @@ async def collect():
                print(f'{Fore.RED}No content scraped.{Style.RESET_ALL}')
             
 
-            # Executa a funcao content_downloader para baixar arquivos postados
+            # DOwnloads shared files
             try:
                 await content_downloader(channel_name, output_directory)
             except Exception as e:
