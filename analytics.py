@@ -10,33 +10,63 @@ from colorama import Fore, Style
 # Handling ICE default IO error handle due to x11
 matplotlib.use('Agg')
 
-# cria nuvem de palavras com os textos compartilhados
+# Creates a wordcloud with shared messages
 def word_cloud(df,ch,dr):
+    from langdetect import detect # https://pypi.org/project/langdetect/
+    from langdetect import DetectorFactory
+    import spacy
     from wordcloud import WordCloud
 
-    texto = ''.join(map(str, df['Text']))
+    text = ''.join(map(str, df['Text']))
 
-    wc = WordCloud(width = 800, height = 400, background_color = 'white').generate(texto)
+    # Define a seed
+    DetectorFactory.seed = 0
+    nlp = None
+   
+    language = detect(text)
+    if language in ['fr', 'en', 'pt', 'es', 'ar']:
+        # Load nlp model
+        if language == 'fr': # French
+            nlp = spacy.load("fr_core_news_sm")
+        elif language == 'en': # English
+            nlp = spacy.load("en_core_web_sm")
+        elif language == 'pt': # portuguese
+            nlp = spacy.load("pt_core_news_sm")
+        elif language == 'es': # spanish
+            nlp = spacy.load("es_core_news_sm")
+        elif language == 'ar': # arabian
+            nlp = spacy.load("ar_core_news_sm")
+        else:
+            print('[-] Language not listed.')
+            final_words = text
+
+    doc = nlp(text)
+
+    # gets only nouns and verbs
+    final_words = str([token.text for token in doc if token.pos_ in ['NOUN', 'VERB']])
+
+    wc = WordCloud(width = 800, height = 400, background_color = 'white').generate(final_words)
 
     print(f'[+] Drawing wordcloud from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL} messages...')
-    # Plot da nuvem de palavra
+    # Plotting the wordcloud
     plt.figure(figsize = (12, 6))
     plt.imshow(wc, interpolation = 'bilinear')
     plt.axis('off')
-    plt.title(f'Conteudo de texto do Grupo {ch}\n')
+    plt.title(f'Channel {ch} content.\n')
     #plt.show()
     cloud_file = f'{dr}/{ch}.png'
     wc.to_file(cloud_file)
 
-# atribui valor aos usernames de acordo com mensagens postadas
+
+# Assigns value to usernames based on messages shared
 def users_Metrics(df,ch,dr):
 
     print(f'[+] Plotting messages from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
-    # Contando o numero de mensagens por usuario
+    # Counting messages per usernames
     contagem_usuarios = df.groupby('Username')['Text'].count().reset_index()
     contagem_usuarios.columns = ['Username', 'Quantidade_Mensagens']
 
-    # Criando o grafico de bolhas
+    # Creating html bubble graph
     fig = px.scatter(contagem_usuarios, 
                      x='Username', 
                      y='Quantidade_Mensagens', 
@@ -44,48 +74,48 @@ def users_Metrics(df,ch,dr):
                      color='Quantidade_Mensagens',
                      hover_name='Username',
                      #hover_data={'Username': False},  # Oculta o indice no hover
-                     title='Quantidade de Mensagens por Usuario',
+                     title='Messages per Usernames',
                      labels={'Quantidade_Mensagens': 'Numero de Mensagens'},)
                      #size_max=60)
 
-    # Personalizando o layout
+    # Layout personalizing
     fig.update_layout(
         xaxis_title='Usuarios',
         yaxis_title='Numero de Mensagens',
         coloraxis_colorbar_title='Numero de Mensagens'
     )
 
-    # Ajustando a posicao dos rotulos no eixo x
+    # Ajusting axis x banner
     fig.update_xaxes(tickangle=45)
 
-    # Exibindo o grafico
+    # Showing the graph
     fig_html_file = f'{dr}/{ch}.html'
     fig.write_html(fig_html_file)
     #fig.show()
 
-    # Criando grafico de barras para o relatorio
+    # Creating bar graph
 
-    # Ordenando os usuários por quantidade de mensagens (decrescente)
+    # Sorting users by the number of messages (descending)
     contagem_usuarios_sorted = contagem_usuarios.sort_values('Quantidade_Mensagens', ascending=False)
     
-    # Pegando os top 20 usuários para melhor visualização
+    # Getting top 20 usernames
     top_20 = contagem_usuarios_sorted.head(20)
     
-    # Criando o gráfico de barras
+    # Creating bar graph
     fig, ax = plt.subplots(figsize=(12, 6))
     
     bars = ax.bar(range(len(top_20)), top_20['Quantidade_Mensagens'], align='center')
     
-    # Configurando o título e labels
-    ax.set_title(f'Top 20 Usuários por Quantidade de Mensagens em {ch}')
-    ax.set_ylabel('Número de Mensagens')
-    ax.set_xlabel('Usuários')
+    # Configuring titles and labels
+    ax.set_title(f'Top 20 Usernames per messages shared in {ch}')
+    ax.set_ylabel('Numbers of messages')
+    ax.set_xlabel('Usernames')
     
-    # Removendo os ticks do eixo x
+    # Removing os ticks from axis x
     ax.set_xticks([])
     
-    # Adicionando os nomes dos top 5 usuários
-    for i, (username, count) in enumerate(zip(top_20['Username'][:10], top_20['Quantidade_Mensagens'][:10])):
+    # Adding top 5 names
+    for i, (username, count) in enumerate(zip(top_20['Username'][:5], top_20['Quantidade_Mensagens'][:5])):
         ax.text(i, count, f'{username}\n({count})', ha='center', va='bottom')
     
     # Adicionando uma grade horizontal para melhor leitura
@@ -94,13 +124,12 @@ def users_Metrics(df,ch,dr):
     # Ajustando o layout
     plt.tight_layout()
     
-    # Salvando o gráfico
+    # Storing graph
     plt.savefig(f'{dr}/{ch}_top_users_bar_chart.png')
     plt.close()
 
 
-# cria lista de Usernames
-
+# Creates usernames list
 async def usernames_list(df,ch,dr):
     import csv
     from username_data import get_user_data
@@ -145,7 +174,7 @@ async def usernames_list(df,ch,dr):
 
 # Call analysis functions
 async def analyse(csv_filename,channel_name_filtered):
-    # carrega o dataframe
+    # loads dataframe
     ch = channel_name_filtered
     df = pd.read_csv(csv_filename)
     dr = f'CaseFiles/{ch}'
