@@ -10,8 +10,67 @@ from colorama import Fore, Style
 # Handling ICE default IO error handle due to x11
 matplotlib.use('Agg')
 
+# Does analysis by time
+async def timeLine(df, ch, dr):
+    from pytz import timezone
+    from tzlocal import get_localzone
+
+    # Convert the 'Date' column to a datetime object
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%Y-%m-%d %H:%M:%S')
+
+    # Customizing timezone
+    try:
+        custom_tz = timezone('America/Halifax')
+        df['Date'] = df['Date'].dt.tz_convert(custom_tz)
+    except Exception as e:
+        print(f"Error: {e}. Using the system's local timezone instead.")
+        local_tz = get_localzone()
+        df['Date'] = df['Date'].dt.tz_convert(local_tz)
+
+
+    # Extracting information for the graphs
+    df['Hour'] = df['Date'].dt.hour
+    df['DayOfWeek'] = df['Date'].dt.day_name()
+
+    # Graph 1: Posts by Hour
+    posts_by_hour = df.groupby('Hour').size()
+    plt.figure(figsize=(12, 6))
+    posts_by_hour.plot(kind='bar', color='blue')
+    plt.title('Posts by Hour')
+    plt.xlabel('Hour of the Day')
+    plt.ylabel('Number of Posts')
+    plt.xticks(rotation=0)
+    plt.tight_layout()
+    plt.savefig(f'{dr}/{ch}_posts_by_hour.jpg')
+    plt.close()
+
+    # Graph 2: Posts by Day of the Week
+    posts_by_day_of_week = df.groupby('DayOfWeek').size()
+    posts_by_day_of_week = posts_by_day_of_week.reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+    
+    plt.figure(figsize=(12, 6))
+    posts_by_day_of_week.plot(kind='bar', color='green')
+    plt.title('Posts by Day of the Week')
+    plt.xlabel('Day of the Week')
+    plt.ylabel('Number of Posts')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig(f'{dr}/{ch}_posts_by_day_of_week.jpg')
+    plt.close()
+
+    # Graph 3: Timeline of All Posts
+    plt.figure(figsize=(12, 6))
+    plt.plot(df['Date'], range(len(df)), marker='o', linestyle='-', markersize=2)
+    plt.title('Timeline of Posts')
+    plt.xlabel('Date')
+    plt.ylabel('Number of Posts (Sequential)')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig(f'{dr}/{ch}_timeline_of_posts.jpg')
+    plt.close()
+
 # Does NLP analysis
-def get_feelings(df,ch,dr):
+async def get_feelings(df,ch,dr):
     import re
     import wordlist as wl
 
@@ -36,10 +95,8 @@ def get_feelings(df,ch,dr):
                         feelings_file.write(output)
                         break
 
-# Verify channel behaviou by time
-
 # Creates a wordcloud with shared messages
-def word_cloud(df,ch,dr):
+async def word_cloud(df,ch,dr):
     from langdetect import detect # https://pypi.org/project/langdetect/
     from langdetect import DetectorFactory
     import spacy
@@ -86,7 +143,7 @@ def word_cloud(df,ch,dr):
     wc.to_file(cloud_file)
 
 # Assigns value to usernames based on messages shared
-def channel_Metrics(df,ch,dr):
+async def channel_Metrics(df,ch,dr):
 
     print(f'[+] Plotting messages from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
     # Counting messages per usernames
@@ -142,8 +199,8 @@ def channel_Metrics(df,ch,dr):
     ax.set_xticks([])
     
     # Adding top 5 names
-    for i, (username, count) in enumerate(zip(top_20['Username'][:5], top_20['Quantidade_Mensagens'][:5])):
-        ax.text(i, count, f'{username}\n({count})', ha='center', va='bottom')
+    for i, (username, count) in enumerate(zip(top_20['Username'][:20], top_20['Quantidade_Mensagens'][:20])):
+        ax.text(i, count, f'{username}\n({count})', ha='center', va='bottom', rotation=45)
     
     # Adicionando uma grade horizontal para melhor leitura
     ax.yaxis.grid(True, linestyle='--', alpha=0.7)
@@ -207,7 +264,8 @@ async def analyse(csv_filename,channel_name_filtered):
     # shape
     df.shape
 
-    word_cloud(df,ch,dr)
-    channel_Metrics(df,ch,dr)
+    await word_cloud(df,ch,dr)
+    await channel_Metrics(df,ch,dr)
+    await get_feelings(df,ch,dr)
+    await timeLine(df,ch,dr)
     await usernames_list(df,ch,dr)
-    get_feelings(df,ch,dr)
