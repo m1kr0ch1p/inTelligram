@@ -11,5 +11,19 @@ wordcloud
 os-sys
 details
 datetime
-csv
 pillow
+textblob==0.15.3
+certifi
+langdetect
+csv
+
+# python3 -m textblob.download_corpora
+# python -m spacy download pt_core_news_sm
+# python -m spacy download en_core_web_sm
+# python -m spacy download fr_core_news_sm
+# python -m spacy download es_core_news_sm
+# python -m spacy download ar_core_news_sm
+
+
+
+
