@@ -1,0 +1,3 @@
+apiID = ""
+apiHash = ""
+number = ""
