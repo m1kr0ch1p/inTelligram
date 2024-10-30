@@ -1,3 +1,0 @@
-apiID = ""
-apiHash = ""
-number = ""
