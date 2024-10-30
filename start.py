@@ -84,7 +84,7 @@ def check_details_file():
 def ignite():
     global channel_list
     channel_list = []
-    channel_file = 'engines/channels.txt'
+    channel_file = 'channels.txt'
     with open(channel_file, "r") as file:
         for channel in file:
             channel_list.append(channel.strip())
@@ -96,4 +96,3 @@ ip_check()
 ignite()
 # Calling data collector
 exec(open("engines/engine.py").read())
-
