@@ -262,14 +262,12 @@ async def usernames_list(df,ch,dr):
 async def analyse(csv_filename,channel_name_filtered):
     # loads dataframe
     ch = channel_name_filtered
-    df = pd.read_csv(csv_filename, encoding='utf-8')
     dr = f'CaseFiles/{ch}'
+    chunk_size = 1000
 
-    # shape
-    df.shape
-
-    await word_cloud(df,ch,dr)
-    await channel_Metrics(df,ch,dr)
-    await get_feelings(df,ch,dr)
-    await timeLine(df,ch,dr)
-    await usernames_list(df,ch,dr)
+    for df in pd.read_csv(csv_filename, encoding='utf-8', chunksize=chunk_size):
+       await word_cloud(df,ch,dr)
+       await channel_Metrics(df,ch,dr)
+       await get_feelings(df,ch,dr)
+       await timeLine(df,ch,dr)
+       await usernames_list(df,ch,dr)
