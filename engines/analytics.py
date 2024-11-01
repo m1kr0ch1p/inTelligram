@@ -91,7 +91,7 @@ async def get_feelings(df,ch,dr):
             for term in terms:
                 for sentence in sentences:
                     if term in sentences:
-                        output = f'[*] Username {author}:\n - Indicator: {issue}\n - Message: "{message}"'
+                        output = f'[*] Username {author}:\n - Indicator: {issue}\n - Message: "{message}\n"'
                         print(output)
                         feelings_file.write(output)
                         break
