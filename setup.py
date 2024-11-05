@@ -30,6 +30,7 @@ setup(
         'langdetect',
         'spacy',
         'pytz',
+        'nltk',
         'tzlocal'
     ],
     cmdclass={
