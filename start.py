@@ -4,17 +4,6 @@ from colorama import Fore, Style
 
 # https://docs.telethon.dev/en/stable/
 
-api_id = None
-api_hash = None
-phone_number = None
-
-# Function to update details.py file
-def update_details_file(api_id, api_hash, phone_number):
-    with open("details.py", "w") as file:
-        file.write(f'apiID = "{api_id}"\n')
-        file.write(f'apiHash = "{api_hash}"\n')
-        file.write(f'number = "{phone_number}"\n')
-
 # External IP banner
 def ip_check():
     import json
@@ -49,7 +38,6 @@ def ignite():
     with open(channel_file, "r") as file:
         for channel in file:
             channel_list.append(channel.strip())
-    #print(channel_list)
 
 # Calling local functions
 ip_check()
