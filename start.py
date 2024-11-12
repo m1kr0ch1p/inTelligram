@@ -41,45 +41,6 @@ def ip_check():
     except Exception as e:
         print(f'{Fore.RED}[-] {e}{Style.RESET_ALL}')
 
-#init(autoreset=True)
-def check_details_file():
-    while True:
-        try:
-            api_id = input("Please enter your API ID:\n")
-            print(f'You entered "{api_id}"')
-            confirmation = input('Is this correct? (y/n)')
-            if confirmation.lower() == 'y':
-                print('Updating...')
-                break
-        except:
-            continue
-    
-    while True:
-        try:
-            api_hash = input("Please enter your API Hash:\n")
-            print(f'You entered "{api_hash}"')
-            confirmation = input('Is this correct? (y/n)')
-            if confirmation.lower() == 'y':
-                print('Updating...')
-                break
-        except:
-            continue
-    
-    while True:
-        try:
-            phone_number = input("Please enter your phone number:\n")
-            print(f'You entered "{phone_number}"')
-            confirmation = input('Is this correct? (y/n)')
-            if confirmation.lower() == 'y':
-                print('Updating...')
-                break
-        except:
-            continue
-    
-    update_details_file(api_id, api_hash, phone_number)
-    
-    print('Setup is complete.')
-
 # receive channels to collect and analyse
 def ignite():
     global channel_list
@@ -92,7 +53,6 @@ def ignite():
 
 # Calling local functions
 ip_check()
-#check_details_file()
 ignite()
 # Calling data collector
 exec(open("engines/engine.py").read())
