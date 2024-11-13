@@ -72,7 +72,11 @@ target_phrase_sections = [
         "leech", "maggot", "maggots", "parasites", "sub-human",
     ]),
 
-    ("Concurseiro", [
-        "convocado",  
+    ("Brazilian CVV scam", [
+        "carder", "cc", "info cc", "cc/info", "checker", ""gg, "devs", "lives", "live", "bin", "bin baixa", "bin mediana",
+         "bin alta", "die", "cc fuzil", "consultavel", "consultável", "full", "cc full", "cvv", "baker", "info baker", "mix",
+         "gold", "golds", "unitaria", "classic", "standard", "aprovação", "aprovacao", "editável", "editavel", "pax", "material",
+         "esquemas", "referencias", "referências", "drop", "drops", "lara", "extraviado", "db", "painel", "puxada", "tela fake",
+         "fakes", "banner", "banners", "lotter",
     ]),
 ]
