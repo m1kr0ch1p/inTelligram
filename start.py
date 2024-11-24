@@ -4,6 +4,17 @@ from colorama import Fore, Style
 
 # https://docs.telethon.dev/en/stable/
 
+# Banner
+def banner():
+    banner = """ 
+    ██╗███╗   ██╗████████╗███████╗██╗     ██╗     ██╗ ██████╗ ██████╗  █████╗ ███╗   ███╗
+    ██║████╗  ██║╚══██╔══╝██╔════╝██║     ██║     ██║██╔════╝ ██╔══██╗██╔══██╗████╗ ████║
+    ██║██╔██╗ ██║   ██║   █████╗  ██║     ██║     ██║██║  ███╗██████╔╝███████║██╔████╔██║
+    ██║██║╚██╗██║   ██║   ██╔══╝  ██║     ██║     ██║██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║
+    ██║██║ ╚████║   ██║   ███████╗███████╗███████╗██║╚██████╔╝██║  ██║██║  ██║██║ ╚═╝ ██║
+    ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝\n"""
+    print(banner)
+
 # External IP banner
 def ip_check():
     import json
@@ -40,6 +51,7 @@ def ignite():
             channel_list.append(channel.strip())
 
 # Calling local functions
+banner()
 ip_check()
 ignite()
 # Calling data collector
