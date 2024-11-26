@@ -261,7 +261,7 @@ async def analyse(csv_filename,channel_name_filtered):
        await word_cloud(df,ch,dr)
        await channel_Metrics(df,ch,dr)
        await timeLine(df,ch,dr)
-       print(f'[*] Searching for user's speech indicators from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
+       print(f"[*] Searching for user's speech indicators from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...")
        await get_feelings(df,ch,dr)
        print(f'[*] Extractinig users data from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
        await usernames_list(df,ch,dr)
