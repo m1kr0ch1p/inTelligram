@@ -41,7 +41,7 @@ async def timeLine(df, ch, dr):
     plt.tight_layout()
     plt.grid(axis='y')
     plt.savefig(f'{dr}/{ch}_posts_by_hour.jpg')
-    plt.close()
+    plt.close('all')
     
     # Graph 2: Posts by Day of the Week
     posts_by_day_of_week = df.groupby('DayOfWeek').size()
@@ -54,7 +54,7 @@ async def timeLine(df, ch, dr):
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.savefig(f'{dr}/{ch}_posts_by_day_of_week.jpg')
-    plt.close()
+    plt.close('all')
 
     # Graph 3: Timeline of All Posts
     plt.figure(figsize=(12, 6))
@@ -67,7 +67,7 @@ async def timeLine(df, ch, dr):
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.savefig(f'{dr}/{ch}_timeline_of_posts.jpg')
-    plt.close()
+    plt.close('all')
 
 # Does NLP analysis
 async def get_feelings(df,ch,dr):
@@ -122,7 +122,6 @@ async def word_cloud(df,ch,dr):
         elif language == 'ar': # arabian
             nlp = spacy.load("ar_core_news_sm")
         else:
-            print('[-] Language not listed.')
             final_words = text
 
     nlp.max_length = 9000000
@@ -134,7 +133,6 @@ async def word_cloud(df,ch,dr):
 
     wc = WordCloud(width = 800, height = 400, background_color = 'white').generate(final_words)
 
-    print(f'[+] Drawing wordcloud from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL} messages...')
     # Plotting the wordcloud
     plt.figure(figsize = (12, 6))
     plt.imshow(wc, interpolation = 'bilinear')
@@ -210,7 +208,7 @@ async def channel_Metrics(df,ch,dr):
     
     # Storing graph
     plt.savefig(f'{dr}/{ch}_top_users_bar_chart.png')
-    plt.close()
+    plt.close('all')
 
 # Creates usernames list
 async def usernames_list(df,ch,dr):
@@ -231,10 +229,8 @@ async def usernames_list(df,ch,dr):
             # obtaining users data
             user_data = await get_user_data(username)
             if user_data:
-                #print(f'[+] Username: {username} -> OK')
                 results.append(user_data)
             else:
-                print(f'[-] No data found for user {username}')
                 continue
         except Exception as e:
             continue
@@ -247,7 +243,7 @@ async def usernames_list(df,ch,dr):
             for row in results:
                 writer.writerow(row)
     else:
-        print(f'[-] No data to write for {ch}.\n')
+        continue
 
 # Call analysis functions
 async def analyse(csv_filename,channel_name_filtered):
@@ -257,11 +253,8 @@ async def analyse(csv_filename,channel_name_filtered):
     chunk_size = 1000
 
     for df in pd.read_csv(csv_filename, encoding='utf-8', chunksize=chunk_size):
-       print(f'[*] Analyzing data from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...') 
        await word_cloud(df,ch,dr)
        await channel_Metrics(df,ch,dr)
        await timeLine(df,ch,dr)
-       print(f"[*] Searching for user's speech indicators from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...")
        await get_feelings(df,ch,dr)
-       print(f'[*] Extractinig users data from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
        await usernames_list(df,ch,dr)
