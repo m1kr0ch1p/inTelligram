@@ -237,7 +237,7 @@ async def usernames_list(df,ch,dr):
             user_data = await get_user_data(username)
 
             if user_data:
-                print(f'[+] Username: {username} -> OK')
+                #print(f'[+] Username: {username} -> OK')
                 results.append(user_data)
             else:
                 print(f'[-] No data found for user {username}')
@@ -253,7 +253,7 @@ async def usernames_list(df,ch,dr):
             writer.writeheader()
             for row in results:
                 writer.writerow(row)
-        print(f'Usernames from {ch} are stored in {filename}.\n')
+        #print(f'Usernames from {ch} are stored in {filename}.\n')
     else:
         print(f'[-] No data to write for {ch}.\n')
 
