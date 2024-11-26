@@ -162,19 +162,21 @@ async def collect():
 
             # Downloads shared files
             try:
+                print(f'[+] Downloading files from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
                 await content_downloader(channel_name, output_directory)
             except Exception as e:
                 print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
             
-
         except Exception as e:
             print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
 
+        print(f'[+] Analyzing data from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
         await analyse(csv_filename,channel_name_filtered)
+        print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
 
 asyncio.run(collect())
 
 
-# TODO - https://github.com/sockysec/Telerecon/blob/main/metadata.py
+# OBS - https://github.com/sockysec/Telerecon/blob/main/metadata.py
 # https://spacy.io/usage/models
 # https://www.geeksforgeeks.org/working-with-missing-data-in-pandas/
