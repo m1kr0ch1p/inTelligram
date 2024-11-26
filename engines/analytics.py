@@ -24,7 +24,6 @@ async def timeLine(df, ch, dr):
         df['Date'] = df['Date'].dt.tz_localize(custom_tz)
         df['Date'] = df['Date'].dt.tz_convert(custom_tz)
     except Exception as e:
-        print(f"Error: {e}. Using the system's local timezone instead.")
         local_tz = get_localzone()
         df['Date'] = df['Date'].dt.tz_convert(local_tz)
 
