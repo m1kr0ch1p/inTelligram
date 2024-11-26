@@ -91,7 +91,6 @@ async def get_feelings(df,ch,dr):
                 for sentence in sentences:
                     if term in sentences:
                         output = f'[*] Username {author}:\n - Indicator: {issue}\n - Message: "{message}\n"'
-                        print(output)
                         feelings_file.write(output)
                         break
 
@@ -147,8 +146,6 @@ async def word_cloud(df,ch,dr):
 
 # Assigns value to usernames based on messages shared
 async def channel_Metrics(df,ch,dr):
-
-    print(f'[+] Plotting messages from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
     # Counting messages per usernames
     contagem_usuarios = df.groupby('Username')['Text'].count().reset_index()
     contagem_usuarios.columns = ['Username', 'Quantidade_Mensagens']
@@ -222,8 +219,6 @@ async def usernames_list(df,ch,dr):
     
     # setting csv file
     filename = f'{dr}/usernames_{ch}.csv'
-
-    print(f'[*] Extractinig users data from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
         
     # listing channel users
     unique_usernames = df['Username'].unique()
@@ -235,14 +230,12 @@ async def usernames_list(df,ch,dr):
         try:
             # obtaining users data
             user_data = await get_user_data(username)
-
             if user_data:
                 #print(f'[+] Username: {username} -> OK')
                 results.append(user_data)
             else:
                 print(f'[-] No data found for user {username}')
                 continue
-
         except Exception as e:
             continue
 
@@ -253,7 +246,6 @@ async def usernames_list(df,ch,dr):
             writer.writeheader()
             for row in results:
                 writer.writerow(row)
-        #print(f'Usernames from {ch} are stored in {filename}.\n')
     else:
         print(f'[-] No data to write for {ch}.\n')
 
@@ -265,8 +257,11 @@ async def analyse(csv_filename,channel_name_filtered):
     chunk_size = 1000
 
     for df in pd.read_csv(csv_filename, encoding='utf-8', chunksize=chunk_size):
+       print(f'[*] Analyzing data from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...') 
        await word_cloud(df,ch,dr)
        await channel_Metrics(df,ch,dr)
-       await get_feelings(df,ch,dr)
        await timeLine(df,ch,dr)
+       print(f'[*] Searching for user's speech indicators from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
+       await get_feelings(df,ch,dr)
+       print(f'[*] Extractinig users data from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
        await usernames_list(df,ch,dr)
