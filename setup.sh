@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pip install colorama asyncio pandas telethon plotly matplotlib numpy wordcloud datetime pillow textblob==0.15.3 certifi langdetect pytz nltk tzlocal corpora
+pip install colorama asyncio pandas telethon plotly matplotlib numpy==1.26.4 wordcloud datetime pillow textblob==0.15.3 certifi langdetect pytz nltk tzlocal corpora
 pip install -U pip setuptools wheel
 pip install spacy
 python -m spacy download en_core_web_sm
