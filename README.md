@@ -43,7 +43,7 @@ To run inTelligram, follow these steps:
 ### Outputs
 
 - Folder containing downloaded files for metadata investigations
-- hHTML file with channels Message/Users graph 
+- HTML file with channels Message/Users graph 
 - Wordcloud PNG file showing the main terms posted by channels users
 - CSV file with channels data scraped (usernames, messases, users ID etc.)
 - CSV file with provided users data (username, first and last name, phone number, profile photo in hex string etc.)
