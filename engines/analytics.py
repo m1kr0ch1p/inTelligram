@@ -243,7 +243,7 @@ async def usernames_list(df,ch,dr):
             for row in results:
                 writer.writerow(row)
     else:
-        continue
+        print('[-] No data to write.')
 
 # Call analysis functions
 async def analyse(csv_filename,channel_name_filtered):
