@@ -215,9 +215,14 @@ async def analyse(csv_filename,channel_name_filtered):
     ch = channel_name_filtered
     dr = f'CaseFiles/{ch}'
     chunk_size = 1000
-
-    for df in pd.read_csv(csv_filename, encoding='utf-8', chunksize=chunk_size):
-       await word_cloud(df,ch,dr)
-       await channel_Metrics(df,ch,dr)
-       await timeLine(df,ch,dr)
-       await get_feelings(df,ch,dr)
+    
+    try:
+        for df in pd.read_csv(csv_filename, encoding='utf-8', chunksize=chunk_size):
+           await word_cloud(df,ch,dr)
+           await channel_Metrics(df,ch,dr)
+           await timeLine(df,ch,dr)
+           await get_feelings(df,ch,dr)
+    except FileNotFoundError:
+        print(f"[-] There is no CSV file in {dr}")
+    except Exception as e:
+        print(f"[-] Error? {e}")
