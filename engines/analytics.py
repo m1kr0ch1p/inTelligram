@@ -1,4 +1,3 @@
-#!/usr/bin/python
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -210,41 +209,6 @@ async def channel_Metrics(df,ch,dr):
     plt.savefig(f'{dr}/{ch}_top_users_bar_chart.png')
     plt.close('all')
 
-# Creates usernames list
-async def usernames_list(df,ch,dr):
-    import csv
-    from username_data import get_user_data
-    
-    # setting csv file
-    filename = f'{dr}/usernames_{ch}.csv'
-        
-    # listing channel users
-    unique_usernames = df['Username'].unique()
-    sorted_usernames = sorted(map(str, unique_usernames))
-
-    results = []
-
-    for username in sorted_usernames:
-        try:
-            # obtaining users data
-            user_data = await get_user_data(username)
-            if user_data:
-                results.append(user_data)
-            else:
-                continue
-        except Exception as e:
-            continue
-
-    if results:
-        with open(filename, mode='w', encoding='utf-8', newline='') as file:
-            fieldnames = results[0].keys()
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-            for row in results:
-                writer.writerow(row)
-    else:
-        print('[-] No data to write.')
-
 # Call analysis functions
 async def analyse(csv_filename,channel_name_filtered):
     # loads dataframe
@@ -257,4 +221,3 @@ async def analyse(csv_filename,channel_name_filtered):
        await channel_Metrics(df,ch,dr)
        await timeLine(df,ch,dr)
        await get_feelings(df,ch,dr)
-       await usernames_list(df,ch,dr)
