@@ -174,8 +174,3 @@ async def collect():
         print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
 
 asyncio.run(collect())
-
-
-# OBS - https://github.com/sockysec/Telerecon/blob/main/metadata.py
-# https://spacy.io/usage/models
-# https://www.geeksforgeeks.org/working-with-missing-data-in-pandas/
