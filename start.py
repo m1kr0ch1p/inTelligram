@@ -1,8 +1,5 @@
-#from engine import collect
 import asyncio
 from colorama import Fore, Style
-
-# https://docs.telethon.dev/en/stable/
 
 # Banner
 def banner():
@@ -55,4 +52,5 @@ banner()
 ip_check()
 ignite()
 # Calling data collector
+exec(open("engines/usercollect.py").read())
 exec(open("engines/engine.py").read())
