@@ -7,7 +7,6 @@ from telethon import TelegramClient, types, sync
 from telethon.tl.functions.messages import GetHistoryRequest
 from colorama import Fore, Style
 
-
 # User's variable to create Telegram session
 api_id = ds.apiID
 api_hash = ds.apiHash
