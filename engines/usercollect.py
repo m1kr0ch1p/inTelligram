@@ -1,7 +1,7 @@
-from telethon import TelegramClient
-from telethon.errors import FloodWaitError, UsernameInvalidError, UsernameNotOccupiedError
-from telethon.tl.types import UserStatusOffline
+from telethon import TelegramClient, errors
+from telethon.tl.functions.channels import GetParticipantsRequest
 from telethon.tl.functions.users import GetFullUserRequest
+from telethon.tl.types import InputPeerUser, ChannelParticipantsSearch
 import sys
 sys.path.append('engines/')
 import csv
@@ -21,67 +21,77 @@ def load_channel_list(file_path='engines/channels.txt'):
     with open(file_path, "r") as file:
         return [line.strip() for line in file]
 
-# Collects user's data
+# Collects user's data with improved error handling
 async def get_user_data(username, output_directory, writer):
-    try:
-        user = await client.get_entity(username)
+    max_retries = 3
+    retry_delay = 5
 
-        photo_dir = f'{output_directory}/users_photos'
-        if not os.path.exists(photo_dir):
-            os.makedirs(photo_dir)
+    for attempt in range(max_retries):
+        try:
+            user = await client.get_entity(username)
 
-        # getting data
-        username = user.username or 'N/A'
-        first_name = user.first_name or 'N/A'
-        last_name = user.last_name or 'N/A'
-        user_id = user.id
-        phone = user.phone if user.phone else "N/A"
-        all_info = await client(GetFullUserRequest(username))  # using GetFullUserRequest
-        bio = all_info.full_user.about or "N/A"
-        birth = all_info.full_user.birthday if all_info.full_user.birthday else "N/A"
-        status = user.status
+            photo_dir = f'{output_directory}/users_photos'
+            if not os.path.exists(photo_dir):
+                os.makedirs(photo_dir)
 
-        # Prepare user info for CSV
-        user_info = {
-            'Username': username,
-            'First Name': first_name,
-            'Last Name': last_name,
-            'User ID': user_id,
-            'Phone': phone,
-            'Bio': bio,
-            'Birthday': birth,
-            'Status': status
-        }
+            # getting data
+            username = user.username or 'N/A'
+            first_name = user.first_name or 'N/A'
+            last_name = user.last_name or 'N/A'
+            user_id = user.id
+            phone = user.phone if user.phone else "N/A"
+            all_info = await client(GetFullUserRequest(InputPeerUser(user_id, user.access_hash)))
+            bio = all_info.full_user.about or "N/A"
+            birth = all_info.full_user.birthday if all_info.full_user.birthday else "N/A"
+            status = user.status
 
-        # Download user photo
-        profile_picture = 'Yes'
-        if user.photo:
-            profile_photo = await client.download_profile_photo(username, file=bytes)
-            with open(os.path.join(photo_dir, f'{username}.jpg'), 'wb') as photo:
-                photo.write(profile_photo)
-        else:
-            profile_picture = 'No'
+            # Prepare user info for CSV
+            user_info = {
+                'Username': username,
+                'First Name': first_name,
+                'Last Name': last_name,
+                'User ID': user_id,
+                'Phone': phone,
+                'Bio': bio,
+                'Birthday': birth,
+                'Status': status
+            }
 
-        print(f'-> {username} - {first_name} {last_name} - ID: {user_id} - Phone: {phone} - Picture: {profile_picture}')
+            # Download user photo
+            profile_picture = 'Yes'
+            if user.photo:
+                profile_photo = await client.download_profile_photo(username, file=bytes)
+                with open(os.path.join(photo_dir, f'{username}.jpg'), 'wb') as photo:
+                    photo.write(profile_photo)
+            else:
+                profile_picture = 'No'
 
-        # Write to CSV immediately after collecting data
-        writer.writerow(user_info)
+            print(f'-> {username} - {first_name} {last_name} - ID: {user_id} - Phone: {phone} - Picture: {profile_picture}')
 
-    except FloodWaitError as e:
-        print(f'Flood wait error: Must wait {e.seconds} seconds.')
-        await asyncio.sleep(e.seconds)
-        return await get_user_data(username, output_directory, writer)
+            # Write to CSV immediately after collecting data
+            writer.writerow(user_info)
+            return
 
-    except (UsernameInvalidError, UsernameNotOccupiedError):
-        return None
+        except errors.FloodWaitError as e:
+            print(f'Flood wait error: Must wait {e.seconds} seconds.')
+            await asyncio.sleep(e.seconds)
 
-    except (errors.ConnectionResetError) as e:
-        print(f'Connection error: {e}. Trying reconnect...')
-        await asyncio.sleep(10)
+        except (errors.UsernameInvalidError, errors.UsernameNotOccupiedError):
+            print(f"Invalid username: {username}")
+            return
 
-    except Exception as e:
-        print(f'An error occurred: {e}')
-        return None
+        except (errors.NetworkError, errors.ConnectionError) as e:
+            print(f'Connection error: {e}. Retrying in {retry_delay} seconds...')
+            await asyncio.sleep(retry_delay)
+
+        except Exception as e:
+            print(f'An unexpected error occurred: {e}')
+            if attempt < max_retries - 1:
+                print(f'Retrying in {retry_delay} seconds...')
+                await asyncio.sleep(retry_delay)
+            else:
+                print(f'Failed to get data for {username} after {max_retries} attempts')
+                return
 
 # Loads CSV file and writes data directly to it
 async def save_to_csv(usernames, channel_name_filtered, output_directory):
@@ -89,7 +99,6 @@ async def save_to_csv(usernames, channel_name_filtered, output_directory):
 
     print(f"[+] Collecting usernames's data from {channel_name_filtered}...")
     
-    # Open the CSV file for writing and create a DictWriter object
     with open(filename, mode='w', encoding='utf-8', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=['Username', 'First Name', 'Last Name', 'User ID', 'Phone', 'Bio', 'Birthday', 'Status'])
         writer.writeheader()
@@ -99,7 +108,28 @@ async def save_to_csv(usernames, channel_name_filtered, output_directory):
 
     print(f'Data saved in {filename}')
 
-# Lists usernames from channel
+
+async def get_all_participants(channel):
+    all_participants = []
+    offset = 0
+    limit = 200
+    while True:
+        try:
+            participants = await client(GetParticipantsRequest(
+                channel, ChannelParticipantsSearch(''), offset=offset,
+                limit=limit, hash=0
+            ))
+            if not participants.users:
+                break
+            all_participants.extend(participants.users)
+            offset += len(participants.users)
+            print(f"Collected {len(all_participants)} participants so far...")
+            await asyncio.sleep(2)  # Increased delay to respect rate limits
+        except errors.FloodWaitError as e:
+            print(f"Rate limit hit. Waiting for {e.seconds} seconds")
+            await asyncio.sleep(e.seconds)
+    return all_participants
+
 async def list_names():
     await client.start()
 
@@ -108,19 +138,22 @@ async def list_names():
     for channel_name in channel_list:
         channel_name_filtered = channel_name.rsplit("/", 1)[-1]
 
-        # Defines output for files store
         output_directory = f'CaseFiles/{channel_name_filtered}'
         
-        # Verify or creates directories
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
 
         try:
             channel = await client.get_entity(channel_name)
-            usernames = [user.username for user in await client.get_participants(channel) if user.username]
+            
+            all_participants = await get_all_participants(channel)
+            print(f"Total participants collected: {len(all_participants)}")
+
+            usernames = [user.username for user in all_participants if user.username]
             await save_to_csv(usernames, channel_name_filtered, output_directory)
+
         except Exception as e:
-            print(f'Error to process channel {channel_name}: {e}')
+            print(f'Error processing channel {channel_name}: {e}')
 
 # Run list_names function
 with client:
