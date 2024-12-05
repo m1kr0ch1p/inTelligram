@@ -4,7 +4,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 import plotly.express as px
 import os
+import asyncio
 from colorama import Fore, Style
+sys.path.append('engines/')
+
 
 # Handling ICE default IO error handle due to x11
 matplotlib.use('Agg')
@@ -69,8 +72,8 @@ async def timeLine(df, ch, dr):
     plt.close('all')
 
 # Does NLP analysis
-async def get_feelings(df,ch,dr):
-    import re
+async def get_indicators(df,ch,dr):
+    #import re
     import wordlist as wl
 
     feelings_file = open(f'{dr}/{ch}_indicators_speechs.txt', 'a')
@@ -209,20 +212,102 @@ async def channel_Metrics(df,ch,dr):
     plt.savefig(f'{dr}/{ch}_top_users_bar_chart.png')
     plt.close('all')
 
-# Call analysis functions
-async def analyse(csv_filename,channel_name_filtered):
-    # loads dataframe
-    ch = channel_name_filtered
-    dr = f'CaseFiles/{ch}'
-    chunk_size = 1000
+# Channel users engagement
+async def channel_engagement(df,ch,dr):
+
+    plot=True
+
+    # Count messages per user
+    messages_per_user = df['Username'].value_counts()
     
-    try:
-        for df in pd.read_csv(csv_filename, encoding='utf-8', chunksize=chunk_size):
-           await word_cloud(df,ch,dr)
-           await channel_Metrics(df,ch,dr)
-           await timeLine(df,ch,dr)
-           await get_feelings(df,ch,dr)
-    except FileNotFoundError:
-        print(f"[-] There is no CSV file in {dr}")
-    except Exception as e:
-        print(f"[-] Error? {e}")
+    # Calculate engagement metrics
+    total_users = len(messages_per_user)
+    total_messages = messages_per_user.sum()
+    mean_messages = total_messages / total_users
+    median_messages = messages_per_user.median()
+    
+    # Gini coefficient calculation
+    def gini(x):
+        mad = np.abs(np.subtract.outer(x, x)).mean()
+        rmad = mad/np.mean(x)
+        g = 0.5 * rmad
+        return g
+    
+    gini_coefficient = gini(messages_per_user.values)
+    
+    # Participation percentiles
+    percentiles = messages_per_user.quantile([0.25, 0.5, 0.75, 0.9])
+    
+    # Lorenz curve function
+    def lorenz_curve(x):
+        x_lorenz = x.cumsum() / x.sum()
+        x_lorenz = np.insert(x_lorenz, 0, 0)
+        y_lorenz = np.arange(x_lorenz.size) / (x.size)
+        return x_lorenz, y_lorenz
+    
+    # Optional plotting
+    if plot:
+        # Messages distribution histogram
+        plt.figure(figsize=(10, 6))
+        plt.hist(messages_per_user, bins=50, edgecolor='black')
+        #messages_per_user.hist(bins=50)
+        plt.title('Message Distribution per User')
+        plt.xlabel('Number of Messages')
+        plt.ylabel('Number of Users')
+        plt.savefig(f'{dr}/{ch}_messages_distribution.png')
+        plt.close('all')
+        
+        # Lorenz curve
+        x_lorenz, y_lorenz = lorenz_curve(np.sort(messages_per_user.values))
+        plt.figure(figsize=(10, 6))
+        plt.plot(y_lorenz, x_lorenz, label='Lorenz Curve')
+        plt.plot([0, 1], [0, 1], 'r--', label='Perfect Equality Line')
+        plt.title('Lorenz Curve - Message Distribution')
+        plt.xlabel('Cumulative Proportion of Users')
+        plt.ylabel('Cumulative Proportion of Messages')
+        plt.legend()
+        plt.savefig(f'{dr}/{ch}_lorenz_curve.png')
+        plt.close('all')
+
+    # Prepare results dictionary
+    results = {
+        'total_users': total_users,
+        'total_messages': total_messages,
+        'mean_messages_per_user': mean_messages,
+        'median_messages_per_user': median_messages,
+        'gini_coefficient': gini_coefficient,
+        'participation_percentiles': percentiles.to_dict()
+    }
+    
+    # Print results
+    print("Channel Engagement Analysis:")
+    for key, value in results.items():
+        print(f"{key}: {value}")
+    
+    return results
+
+
+# Call analysis functions
+async def analyse():
+    import traceback
+
+    for channel_name in channel_list:
+        ch = channel_name.rsplit("/",1)[-1]
+        print(f'[+] Analyzing data from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...')
+        dr = f'CaseFiles/{ch}'
+        csv_filename = f'{dr}/{ch}.csv'
+        df = pd.read_csv(csv_filename, encoding='utf-8')
+        try:
+            await word_cloud(df,ch,dr)
+            await channel_Metrics(df,ch,dr)
+            await timeLine(df,ch,dr)
+            await get_indicators(df,ch,dr)
+            await channel_engagement(df,ch,dr)
+        except FileNotFoundError:
+            print(f"[-] There is no CSV file in {dr}")
+        except Exception as e:
+            #print(f"[-] Error: {e}")
+            print(traceback.format_exc())
+        
+asyncio.run(analyse())
+print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}") 
