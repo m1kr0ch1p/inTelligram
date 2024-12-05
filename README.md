@@ -14,7 +14,8 @@
 - **Python 3.x**: Ensure that Python is installed on your machine.
 - **Required Libraries**: Install necessary libraries using pip:
   ```bash
-  $ bash setup.sh
+  $ python install -r requirements.txt
+  $ python -m pip install setup.py
   ```
 
 ### Configuration Files
