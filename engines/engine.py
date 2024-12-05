@@ -3,7 +3,7 @@ import sys
 sys.path.append('engines/')
 import asyncio
 import details as ds
-from telethon import TelegramClient, types, sync
+from telethon import TelegramClient, sync #, types
 from telethon.tl.functions.messages import GetHistoryRequest
 from colorama import Fore, Style
 
@@ -66,7 +66,6 @@ async def content_downloader(channel_name, output_directory):
 
 # Scrapping channel and collecting data
 async def scrape_channel_content(channel_name):
-    from datetime import datetime
 
     async with client:
         try:
@@ -111,12 +110,11 @@ async def scrape_channel_content(channel_name):
 # Gets channel URL, set collected data, directory and file names 
 async def collect():
     import pandas as pd
-    from analytics import analyse
-    from datetime import datetime
+    #from datetime import datetime
 
     for channel_name in channel_list:
         try:
-            today = datetime.now().strftime("%Y-%m-%d")
+            #today = datetime.now().strftime("%Y-%m-%d")
 
             # Gives channel name to directory
             channel_name_filtered = channel_name.rsplit("/",1)[-1]
@@ -129,7 +127,8 @@ async def collect():
                 os.makedirs(output_directory)
 
             # Gives file name
-            csv_filename = f'{output_directory}/{channel_name_filtered}_{today}.csv'
+            #csv_filename = f'{output_directory}/{channel_name_filtered}_{today}.csv'
+            csv_filename = f'{output_directory}/{channel_name_filtered}.csv'
             print(f'[+] Scraping content from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
 
             # runs scrape_channel_content function
@@ -157,7 +156,6 @@ async def collect():
             else:
                print(f'{Fore.RED}No content scraped.{Style.RESET_ALL}')
             
-
             # Downloads shared files
             try:
                 print(f'[+] Downloading files from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
@@ -167,9 +165,5 @@ async def collect():
             
         except Exception as e:
             print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
-
-        print(f'[+] Analyzing data from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
-        await analyse(csv_filename,channel_name_filtered)
-        print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
 
 asyncio.run(collect())
