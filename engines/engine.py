@@ -13,6 +13,11 @@ api_hash = ds.apiHash
 phone = ds.number
 client = TelegramClient(phone, api_id, api_hash)
 
+# Loads a channel list from file
+def load_channel_list(file_path='engines/channels.txt'):
+    with open(file_path, "r") as file:
+        return [line.strip() for line in file]
+
 # Download shared files
 async def content_downloader(channel_name, output_directory):
     async with client:
@@ -111,6 +116,8 @@ async def scrape_channel_content(channel_name):
 async def collect():
     import pandas as pd
     #from datetime import datetime
+
+    channel_list = load_channel_list()
 
     for channel_name in channel_list:
         try:
