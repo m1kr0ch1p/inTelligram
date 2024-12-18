@@ -4,14 +4,19 @@ import matplotlib
 import matplotlib.pyplot as plt
 import plotly.express as px
 import os
-import asyncio
 import sys
+import asyncio
 from colorama import Fore, Style
 sys.path.append('engines/')
 
 
 # Handling ICE default IO error handle due to x11
 matplotlib.use('Agg')
+
+# Loads a channel list from file
+def load_channel_list(file_path='engines/channels.txt'):
+    with open(file_path, "r") as file:
+        return [line.strip() for line in file]
 
 # Does analysis by time
 async def timeLine(df, ch, dr):
@@ -274,12 +279,12 @@ async def channel_engagement(df,ch,dr):
     results = {
         'total_users': total_users,
         'total_messages': total_messages,
+        'gini_coefficient': gini_coefficient,
         'mean_messages_per_user': mean_messages,
         'median_messages_per_user': median_messages,
-        'gini_coefficient': gini_coefficient,
         'participation_percentiles': percentiles.to_dict()
     }
-    
+
     # Print results
     print("Channel Engagement Analysis:")
     for key, value in results.items():
@@ -291,6 +296,8 @@ async def channel_engagement(df,ch,dr):
 # Call analysis functions
 async def analyse():
     import traceback
+
+    channel_list = load_channel_list()
 
     for channel_name in channel_list:
         ch = channel_name.rsplit("/",1)[-1]
@@ -311,4 +318,4 @@ async def analyse():
             print(traceback.format_exc())
         
 asyncio.run(analyse())
-print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}") 
+print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
