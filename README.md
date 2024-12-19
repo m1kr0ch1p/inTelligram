@@ -49,7 +49,7 @@ To run inTelligram, follow these steps:
 - CSV file with channels data scraped (usernames, messases, users ID etc.)
 - CSV file with provided users data (username, first and last name, phone number, profile photo in hex string etc.)
 - TXT file with speech indicators analysis based in wordlist
-- JPG graphs with channels messages analysis by hours of the day, days of week and timeline
+- JPG graphs with channels messages analysis by hours of the day, days of week, timeline etc.
 
 ## Contributing
 Contributions are welcome! If you find bugs or have suggestions for improvements, please create an issue or submit a pull request on the GitHub repository.
