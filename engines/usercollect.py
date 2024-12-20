@@ -123,7 +123,7 @@ async def get_all_participants(channel):
                 break
             all_participants.extend(participants.users)
             offset += len(participants.users)
-            print(f"Collected {len(all_participants)} participants so far...")
+            #print(f"Collected {len(all_participants)} participants so far...")
             await asyncio.sleep(2)  # Increased delay to respect rate limits
         except errors.FloodWaitError as e:
             print(f"Rate limit hit. Waiting for {e.seconds} seconds")
