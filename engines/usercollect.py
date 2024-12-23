@@ -3,12 +3,13 @@ from telethon.tl.functions.channels import GetParticipantsRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import InputPeerUser, ChannelParticipantsSearch
 import sys
-sys.path.append('engines/')
 import csv
 import asyncio
 import details as ds
 import os
 from colorama import Fore, Style
+
+sys.path.append('engines/')
 
 # Session elements
 api_id = ds.apiID
