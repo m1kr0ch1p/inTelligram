@@ -123,7 +123,7 @@ async def list_names():
         try:
             channel = await client.get_entity(channel_name)
             all_participants = await get_all_participants(channel)
-            print(f"Total participants collected: {len(all_participants)}")
+            print(f"Total participants collected: {len(all_participants)}", end="")
 
             usernames = [user.username for user in all_participants if user.username]
             await save_to_csv(usernames, channel_name_filtered, output_directory)
