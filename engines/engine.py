@@ -1,12 +1,12 @@
 import os
 import sys
 import asyncio
-import details as ds
 from telethon import TelegramClient, sync #, types
 from telethon.tl.functions.messages import GetHistoryRequest
 from colorama import Fore, Style
 
 sys.path.append('engines/')
+import details as ds
 
 # User's variable to create Telegram session
 api_id = ds.apiID
