@@ -18,21 +18,23 @@ import psutil
 sys.path.append('engines/')
 matplotlib.use('Agg')
 
+# Loading list of channels
 def load_channel_list(file_path='engines/channels.txt'):
     with open(file_path, "r") as file:
         return [line.strip() for line in file]
 
+# Draw messages timeline from channel
 def timeLine(df, ch, dr):
-    # Convertendo as datas e ajustando o fuso horário
+    # Converting dates and fixing time zone
     df['Date'] = pd.to_datetime(df['Date'], errors='coerce', format='%Y-%m-%d %H:%M:%S%z')
-    df = df.dropna(subset=['Date'])  # Removendo linhas com datas inválidas
+    df = df.dropna(subset=['Date'])  # Deleting invalid dates
 
     local_tz = get_localzone()
     df['Date'] = df['Date'].dt.tz_convert(local_tz)
     df['DayOfWeek'] = df['Date'].dt.day_name()
     df['Hour'] = df['Date'].dt.hour
 
-    # Plotando posts por hora
+    # Plotting posts by hour
     posts_by_hour = df['Hour'].value_counts().reindex(range(24), fill_value=0).sort_index()
     plt.figure(figsize=(12, 6))
     posts_by_hour.plot(kind='bar', color='blue')
@@ -45,7 +47,7 @@ def timeLine(df, ch, dr):
     plt.savefig(f'{dr}/{ch}_posts_by_hour.jpg')
     plt.close('all')
 
-    # Plotando posts por dia da semana
+    # Plotting posts by days of week
     posts_by_day_of_week = df['DayOfWeek'].value_counts().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], fill_value=0)
     plt.figure(figsize=(12, 6))
     posts_by_day_of_week.plot(kind='bar', color='green')
@@ -57,7 +59,7 @@ def timeLine(df, ch, dr):
     plt.savefig(f'{dr}/{ch}_posts_by_day_of_week.jpg')
     plt.close('all')
 
-    # Plotando a linha do tempo dos posts
+    # Plotting posts timeline
     plt.figure(figsize=(12, 6))
     df_sorted = df.sort_values('Date')
     plt.plot(df_sorted['Date'], range(1, len(df_sorted) + 1), marker='o', linestyle='-', markersize=2)
@@ -163,10 +165,8 @@ async def channel_engagement(df, ch, dr):
         mad = np.abs(np.subtract.outer(x, x)).mean()
         rmad = mad/np.mean
 
-
 # Call analysis functions
 async def analyse():
-    import traceback
 
     channel_list = load_channel_list()
 
@@ -185,8 +185,7 @@ async def analyse():
         except FileNotFoundError:
             print(f"[-] There is no CSV file in {dr}")
         except Exception as e:
-            #print(f"[-] Error: {e}")
-            print(traceback.format_exc())
+            print(f"[-] Error: {e}")
 
 asyncio.run(analyse())
 print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
