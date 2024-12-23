@@ -5,11 +5,11 @@ from telethon.tl.types import InputPeerUser, ChannelParticipantsSearch
 import sys
 import csv
 import asyncio
-import details as ds
 import os
 from colorama import Fore, Style
 
 sys.path.append('engines/')
+import details as ds
 
 # Session elements
 api_id = ds.apiID
