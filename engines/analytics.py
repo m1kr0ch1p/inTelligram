@@ -71,7 +71,7 @@ def timeLine(df, ch, dr):
     plt.savefig(f'{dr}/{ch}_timeline_of_posts.jpg')
     plt.close('all')
 
-
+# Makes speech analysis
 async def get_indicators(df, ch, dr):
     import wordlist as wl
 
@@ -154,17 +154,78 @@ async def channel_Metrics(df, ch, dr):
     plt.close('all')
 
 async def channel_engagement(df, ch, dr):
-    messages_per_user = df['Username'].value_counts()
 
+    plot=True
+
+    # Count messages per user
+    messages_per_user = df['Username'].value_counts()
+    
+    # Calculate engagement metrics
     total_users = len(messages_per_user)
     total_messages = messages_per_user.sum()
     mean_messages = total_messages / total_users
     median_messages = messages_per_user.median()
     
+    # Gini coefficient calculation
     def gini(x):
         mad = np.abs(np.subtract.outer(x, x)).mean()
-        rmad = mad/np.mean
+        rmad = mad/np.mean(x)
+        g = 0.5 * rmad
+        return g
+    
+    gini_coefficient = gini(messages_per_user.values)
+    
+    # Participation percentiles
+    percentiles = messages_per_user.quantile([0.25, 0.5, 0.75, 0.9])
+    
+    # Lorenz curve function
+    def lorenz_curve(x):
+        x_lorenz = x.cumsum() / x.sum()
+        x_lorenz = np.insert(x_lorenz, 0, 0)
+        y_lorenz = np.arange(x_lorenz.size) / (x.size)
+        return x_lorenz, y_lorenz
+    
+    # Optional plotting
+    if plot:
+        # Messages distribution histogram
+        plt.figure(figsize=(10, 6))
+        plt.hist(messages_per_user, bins=50, edgecolor='black')
+        #messages_per_user.hist(bins=50)
+        plt.title('Message Distribution per User')
+        plt.xlabel('Number of Messages')
+        plt.ylabel('Number of Users')
+        plt.savefig(f'{dr}/{ch}_messages_distribution.png')
+        plt.close('all')
+        
+        # Lorenz curve
+        x_lorenz, y_lorenz = lorenz_curve(np.sort(messages_per_user.values))
+        plt.figure(figsize=(10, 6))
+        plt.plot(y_lorenz, x_lorenz, label='Lorenz Curve')
+        plt.plot([0, 1], [0, 1], 'r--', label='Perfect Equality Line')
+        plt.title('Lorenz Curve - Message Distribution')
+        plt.xlabel('Cumulative Proportion of Users')
+        plt.ylabel('Cumulative Proportion of Messages')
+        plt.legend()
+        plt.savefig(f'{dr}/{ch}_lorenz_curve.png')
+        plt.close('all')
 
+    # Prepare results dictionary
+    results = {
+        'total_users': total_users,
+        'total_messages': total_messages,
+        'gini_coefficient': gini_coefficient,
+        'mean_messages_per_user': mean_messages,
+        'median_messages_per_user': median_messages,
+        'participation_percentiles': percentiles.to_dict()
+    }
+
+    # Print results
+    print("Channel Engagement Analysis:")
+    for key, value in results.items():
+        print(f"{key}: {value}")
+    
+    return results
+    
 # Call analysis functions
 async def analyse():
 
