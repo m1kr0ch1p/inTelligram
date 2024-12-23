@@ -54,6 +54,7 @@ async def content_downloader(channel_name, output_directory):
 
                         if not os.path.exists(file_path):
                             await client.download_media(message, file_path)
+                            print(f'[+] {file_name} downloaded.')
                         else:
                             print(f'[!] {file_name} already exists.')
 
