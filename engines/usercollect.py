@@ -130,5 +130,4 @@ async def list_names():
         except Exception as e:
             print(f'Error processing channel {channel_name}: {e}')
 
-with client:
-    client.loop.run_until_complete(list_names())
+asyncio.run(list_names())
