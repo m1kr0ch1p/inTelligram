@@ -63,12 +63,20 @@ def create_dirs():
             os.makedirs(output_directory)
 
 
-# Calling local functions
-banner()
-ip_check()
-ignite()
-create_dirs()
-# Calling data collector
-exec(open("engines/usercollect.py").read())
-exec(open("engines/engine.py").read())
-exec(open("engines/analytics.py").read())
+def main():
+    # Calling local functions
+    banner()
+    ip_check()
+    ignite()
+    create_dirs()
+
+    # Calling data collector
+    asyncio.run(collect())
+    asyncio.run(analyse())
+    asyncio.run(list_names())
+
+    print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
+
+
+if __name__ == "__main__":
+    main()
