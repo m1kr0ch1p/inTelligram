@@ -1,6 +1,10 @@
 import asyncio
 from colorama import Fore, Style
 import sys
+sys.path.append('engines/')
+from engine import collect
+from analytics import analyse
+from usercollect import list_names
 
 # Banner
 def banner():
