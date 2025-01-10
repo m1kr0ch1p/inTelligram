@@ -143,15 +143,3 @@ async def list_names():
             await save_to_csv(usernames, channel_name_filtered, output_directory)
         except Exception as e:
             print(f'Error processing channel {channel_name}: {e}')
-
-
-try:
-    loop = asyncio.get_event_loop()
-    if loop.is_closed():
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-loop.run_until_complete(list_names())
