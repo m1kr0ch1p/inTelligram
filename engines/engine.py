@@ -130,5 +130,3 @@ async def collect():
 
         except Exception as e:
             print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
-
-asyncio.run(collect())
