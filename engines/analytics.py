@@ -247,6 +247,3 @@ async def analyse():
             print(f"[-] There is no CSV file in {dr}")
         except Exception as e:
             print(f"[-] Error: {e}")
-
-asyncio.run(analyse())
-print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
