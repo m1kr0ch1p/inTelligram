@@ -99,7 +99,7 @@ async def word_cloud(df, ch, dr):
         'fr': 'fr_core_news_sm',
         'en': 'en_core_web_sm',
         'pt': 'pt_core_news_sm',
-        'es': 'es_core_web_sm',
+        'es': 'es_core_news_sm',
         'ar': 'ar_core_news_sm'
     }
 
