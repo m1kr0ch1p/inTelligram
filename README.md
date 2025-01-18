@@ -15,10 +15,10 @@
 - **Required Libraries**: Install necessary libraries using pip:
   ```bash
   pip3 install -r requirements.txt
-  python -m spacy download en_core_web_sm
-  python -m spacy download es_core_news_sm
-  python -m spacy download fr_core_news_sm
-  python -m spacy download pt_core_news_sm
+  python3 -m spacy download en_core_web_sm
+  python3 -m spacy download es_core_news_sm
+  python3 -m spacy download fr_core_news_sm
+  python3 -m spacy download pt_core_news_sm
   ```
 
 ### Configuration Files
