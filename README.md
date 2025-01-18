@@ -14,11 +14,11 @@
 - **Python 3.x**: Ensure that Python is installed on your machine.
 - **Required Libraries**: Install necessary libraries using pip:
   ```bash
-  $ python install -r requirements.txt
-  $ python -m spacy download en_core_web_sm
-  $ python -m spacy download es_core_news_sm
-  $ python -m spacy download fr_core_news_sm
-  $ python -m spacy download pt_core_news_sm
+  pip3 install -r requirements.txt
+  python -m spacy download en_core_web_sm
+  python -m spacy download es_core_news_sm
+  python -m spacy download fr_core_news_sm
+  python -m spacy download pt_core_news_sm
   ```
 
 ### Configuration Files
