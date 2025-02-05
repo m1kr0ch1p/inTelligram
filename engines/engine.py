@@ -28,40 +28,45 @@ async def content_downloader(channel_name, output_directory):
         all_messages = []
 
         while True:
-            history = await client(GetHistoryRequest(
-                peer=channel,
-                offset_id=offset_id,
-                offset_date=None,
-                add_offset=0,
-                limit=limit,
-                max_id=0,
-                min_id=0,
-                hash=0
-            ))
-            messages = history.messages
+            try:
+                history = await client(GetHistoryRequest(
+                    peer=channel,
+                    offset_id=offset_id,
+                    offset_date=None,
+                    add_offset=0,
+                    limit=limit,
+                    max_id=0,
+                    min_id=0,
+                    hash=0
+                ))
+                messages = history.messages
 
-            for message in messages:
-                if message.document:
-                    file_name = next(
-                        (attr.file_name for attr in message.document.attributes if hasattr(attr, 'file_name')),
-                        f'document_{message.id}'
-                    )
+                for message in messages:
+                    if message.document:
+                        file_name = next(
+                            (attr.file_name for attr in message.document.attributes if hasattr(attr, 'file_name')),
+                            f'document_{message.id}'
+                        )
 
-                    if file_name.lower().endswith(('.txt', '.zip', '.rar', '.jpg', '.png', '.pdf', '.doc', '.docx', '.xls')):
-                        downloaded_files = os.path.join(output_directory, 'downloaded_files')
-                        os.makedirs(downloaded_files, exist_ok=True)
-                        file_path = os.path.join(downloaded_files, file_name)
+                        if file_name.lower().endswith(('.txt', '.zip', '.rar', '.jpg', '.png', '.pdf', '.doc', '.docx', '.xls')):
+                            downloaded_files = os.path.join(output_directory, 'downloaded_files')
+                            os.makedirs(downloaded_files, exist_ok=True)
+                            file_path = os.path.join(downloaded_files, file_name)
+    
+                            if not os.path.exists(file_path):
+                                await client.download_media(message, file_path)
+                                print(f'[+] {file_name} downloaded.')
+                            else:
+                                print(f'[!] {file_name} already exists.')
 
-                        if not os.path.exists(file_path):
-                            await client.download_media(message, file_path)
-                            print(f'[+] {file_name} downloaded.')
-                        else:
-                            print(f'[!] {file_name} already exists.')
+                all_messages.extend(messages)
+                if len(messages) < limit:
+                    break
+                offset_id = messages[-1].id
 
-            all_messages.extend(messages)
-            if len(messages) < limit:
-                break
-            offset_id = messages[-1].id
+            except Exception as e:
+               print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
+               return []
 
 async def scrape_channel_content(channel_name):
     """Scrapes the content of a Telegram channel"""
@@ -77,19 +82,17 @@ async def scrape_channel_content(channel_name):
 
                 user_info = {
                     'Username': sender.username if sender and isinstance(sender, sync.types.User) else "N/A",
-                    'First Name': sender.first_name if sender else "N/A",
-                    'Last Name': sender.last_name if sender and sender.last_name else "N/A",
                     'User ID': sender.id if sender else "N/A",
                     'Views': post.views or "N/A",
                     'Message URL': f"https://t.me/{channel_name}/{post.id}"
                 }
 
-                content.append((date, text, user_info['Username'], user_info['First Name'], user_info['Last Name'], user_info['User ID'], user_info['Views'], user_info['Message URL']))
+                content.append((date, text, user_info['Username'], user_info['User ID'], user_info['Views'], user_info['Message URL']))
 
             return content
 
         except Exception as e:
-            print(f"An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
+            print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
             return []
 
 async def collect():
@@ -109,7 +112,7 @@ async def collect():
             content = await scrape_channel_content(channel_name)
 
             if content:
-                df = pd.DataFrame(content, columns=['Date', 'Text', 'Username', 'First Name', 'Last Name', 'User ID', 'Views', 'Message URL'])
+                df = pd.DataFrame(content, columns=['Date', 'Text', 'Username', 'User ID', 'Views', 'Message URL'])
                 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
                 df.dropna(subset=['Date'], inplace=True)
                 df['Hour'] = df['Date'].dt.hour
