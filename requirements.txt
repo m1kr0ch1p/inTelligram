@@ -4,7 +4,7 @@ pandas
 telethon
 plotly
 matplotlib
-numpy
+numpy==1.26.4
 wordcloud
 datetime
 pillow
