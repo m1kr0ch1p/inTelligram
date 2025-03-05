@@ -12,13 +12,18 @@
 
 ### Prerequisites
 - **Python 3.x**: Ensure that Python is installed on your machine.
-- **Required Libraries**: Install necessary libraries using pip:
+- **Required Libraries**: Install necessary libraries using pip.
+
+#### Installation
+
   ```bash
-  pip3 install -r requirements.txt
-  python3 -m spacy download en_core_web_sm
-  python3 -m spacy download es_core_news_sm
-  python3 -m spacy download fr_core_news_sm
-  python3 -m spacy download pt_core_news_sm
+git clone git@github.com:m1kr0ch1p/inTelligram.git
+cd inTelligram
+pip3 install -r requirements.txt
+python3 -m spacy download en_core_web_sm
+python3 -m spacy download es_core_news_sm
+python3 -m spacy download fr_core_news_sm
+python3 -m spacy download pt_core_news_sm
   ```
 
 ### Configuration Files
