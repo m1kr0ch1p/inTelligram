@@ -5,6 +5,7 @@ sys.path.append('engines/')
 from engine import collect
 from analytics import analyse
 from usercollect import list_names
+from exif import file_treatment
 
 # Banner
 def banner():
@@ -78,9 +79,8 @@ def main():
     asyncio.run(collect())
     asyncio.run(analyse())
     asyncio.run(list_names())
-
+    file_treatment()
     print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
-
 
 if __name__ == "__main__":
     main()
