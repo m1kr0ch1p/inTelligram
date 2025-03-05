@@ -18,3 +18,7 @@ corpora
 setuptools
 wheel
 spacy
+PyPDF2
+exifread
+python-docx
+psutil
