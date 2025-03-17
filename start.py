@@ -4,7 +4,6 @@ import sys
 sys.path.append('engines/')
 from engine import collect
 from analytics import analyse
-from usercollect import list_names
 from exif import file_treatment
 
 # Banner
@@ -78,7 +77,6 @@ def main():
     # Calling data collector
     asyncio.run(collect())
     asyncio.run(analyse())
-    asyncio.run(list_names())
     file_treatment()
     print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
 
