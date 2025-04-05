@@ -47,7 +47,6 @@ async def user_collect(channel_name, channel_name_filtered):
                     'Last_Name': user.last_name or 'N/A',
                     'Phone': user.phone or "N/A",
                     'Bio': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.about or "N/A",
-                    'Birthday': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.birthday or "N/A",
                     'Status': user.status
                 }
     
@@ -83,7 +82,7 @@ async def user_collect(channel_name, channel_name_filtered):
         print(f"[+] Collecting usernames' data from {channel_name_filtered}...")
     
         with open(filename, mode='w', encoding='utf-8', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=['User_ID', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Bio', 'Birthday', 'Status'])
+            writer = csv.DictWriter(file, fieldnames=['User_ID', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Bio', 'Status'])
             writer.writeheader()
     
             for username in usernames:
