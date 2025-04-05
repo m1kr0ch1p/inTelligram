@@ -40,6 +40,7 @@ def ip_check():
 
         # Printing results
         print(f'[*] You are connected to Internet from {Fore.YELLOW}{formatted_info}{Style.RESET_ALL}\n')
+        print(f'{Fore.YELLOW}DUE TO YOU MIGHT BE DOWNLOADING INFECTED FILES FROM TELEGRAM GROUPS, BE SURE YOU ARE RUNNIN THIS TOOL IN A VIRTUAL MACHINE.{Style.RESET_ALL}\n')
     except Exception as e:
         print(f'{Fore.RED}[-] {e}{Style.RESET_ALL}')
 
