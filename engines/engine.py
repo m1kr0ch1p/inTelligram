@@ -47,6 +47,7 @@ async def user_collect(channel_name, channel_name_filtered):
                     'Last_Name': user.last_name or 'N/A',
                     'Phone': user.phone or "N/A",
                     'Bio': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.about or "N/A",
+                    #'Birthday': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.birthday or "N/A",
                     'Status': user.status
                 }
     
@@ -82,6 +83,7 @@ async def user_collect(channel_name, channel_name_filtered):
         print(f"[+] Collecting usernames' data from {channel_name_filtered}...")
     
         with open(filename, mode='w', encoding='utf-8', newline='') as file:
+           # writer = csv.DictWriter(file, fieldnames=['User_ID', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Bio', 'Birthday', 'Status'])
             writer = csv.DictWriter(file, fieldnames=['User_ID', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Bio', 'Status'])
             writer.writeheader()
     
@@ -179,7 +181,7 @@ async def content_downloader(channel_name, output_directory):
                             f'document_{message.id}'
                         )
 
-                        if file_name.lower().endswith(('.txt', '.zip', '.rar', '.jpg', '.png', '.pdf', '.doc', '.docx', '.xls')):
+                        if file_name.lower().endswith(('.txt', '.zip', '.rar', '.jpg', '.png', '.pdf', '.doc', '.docx', '.xls', '.ppt', '.pptx')):
                             downloaded_files = os.path.join(output_directory, 'downloaded_files')
                             os.makedirs(downloaded_files, exist_ok=True)
                             file_path = os.path.join(downloaded_files, file_name)
@@ -199,11 +201,17 @@ async def content_downloader(channel_name, output_directory):
                print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
                return []
 
-async def scrape_channel_content(channel_name):
+async def scrape_channel_content(channel_name,output_directory):
     """Scrapes the content of a Telegram channel"""
     async with client:
         try:
             entity = await client.get_entity(channel_name)
+
+            output_file = open(f'{output_directory}/channel_info.txt','w')
+            output_file.write(str(entity))
+            output_file.close()
+            print(f'''===> Channel info:\n Id: {entity.id}\n Access hash: {entity.access_hash}\n Date: {entity.date}\n Title: {entity.title}\n Username: {entity.username}
+ Previous usernames: {entity.usernames}\n Creator: {entity.creator}\n Megagroup: {entity.megagroup}\n Link: {entity.has_link}\n Geo: {entity.has_geo}\n''')
             content = []
 
             async for post in client.iter_messages(entity):
@@ -236,9 +244,8 @@ async def collect():
             output_directory = os.path.join('CaseFiles', channel_name_filtered)
             os.makedirs(output_directory, exist_ok=True)
             csv_filename = os.path.join(output_directory, f'{channel_name_filtered}.csv')
-
             print(f'[+] Scraping content from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
-            content = await scrape_channel_content(channel_name)
+            content = await scrape_channel_content(channel_name,output_directory)
 
             if content:
                 df = pd.DataFrame(content, columns=['Date', 'Text', 'Username', 'User ID', 'Views', 'Message URL'])
