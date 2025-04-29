@@ -210,7 +210,7 @@ async def scrape_channel_content(channel_name,output_directory):
             output_file.write(str(entity))
             output_file.close()
             print(f'''===> Channel info:\n Id: {entity.id}\n Access hash: {entity.access_hash}\n Date: {entity.date}\n Title: {entity.title}\n Username: {entity.username}
- Previous usernames: {entity.usernames}\n Creator: {entity.creator}\n Megagroup: {entity.megagroup}\n Link: {entity.has_link}\n Geo: {entity.has_geo}\n''')
+ Creator: {entity.creator}\n Is gigagroup: {entity.gigagroup}\n Is megagroup: {entity.megagroup}\n Link: {entity.has_link}\n Geo: {entity.has_geo}\n''')
             content = []
 
             async for post in client.iter_messages(entity):
