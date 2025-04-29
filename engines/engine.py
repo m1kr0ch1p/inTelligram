@@ -13,7 +13,6 @@ import csv
 
 sys.path.append('engines/')
 import details as ds
-from usercollect import get_all_participants
 
 # User's variables to create a Telegram session
 api_id = ds.apiID
