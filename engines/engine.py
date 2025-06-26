@@ -22,7 +22,7 @@ client = TelegramClient(phone, api_id, api_hash)
 
 def load_channel_list(file_path='engines/channels.txt'):
     """Loads the channel list from a file"""
-    with open(file_path, "r") as file:
+    with open(file_path, "r", encoding='utf-8') as file:
         return [line.strip() for line in file]
 
 async def user_collect(channel_name, channel_name_filtered):
@@ -206,7 +206,7 @@ async def scrape_channel_content(channel_name,output_directory):
         try:
             entity = await client.get_entity(channel_name)
 
-            output_file = open(f'{output_directory}/channel_info.txt','w')
+            output_file = open(f'{output_directory}/channel_info.txt','w', encoding='utf-8')
             output_file.write(str(entity))
             output_file.close()
             print(f'''===> Channel info:\n Id: {entity.id}\n Access hash: {entity.access_hash}\n Date: {entity.date}\n Title: {entity.title}\n Username: {entity.username}
