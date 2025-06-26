@@ -75,29 +75,31 @@ def file_treatment():
         ch = channel_name.rsplit("/",1)[-1]
         down_dr = f'CaseFiles/{ch}/downloaded_files'
         files = list_dir(down_dr)
-        print(f"[+] Extracting Metadata from downloaded files from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...")
-        sys.stdout = open(f'{down_dr}/{ch}_downloadedExif.md', 'w')
-        print(f'## Extracting Metadata in {ch}\n\n')
-        for file in files:
-            try:
-                path = f'{down_dr}/{file}'
+        try:
+            print(f"[+] Extracting Metadata from downloaded files from {Fore.LIGHTYELLOW_EX}{ch}{Style.RESET_ALL}...")
+            sys.stdout = open(f'{down_dr}/{ch}_downloadedExif.md', 'w')
+            print(f'## Extracting Metadata in {ch}\n\n')
+            for file in files:
+                try:
+                    path = f'{down_dr}/{file}'
 
-                if file.lower().endswith(('.jpg', '.png')):
-                    print(f'[+] {file} is an image file.')
-                    image_extract(path)
-                elif file.lower().endswith('.pdf'):
-                    print(f'[+] {file} is a PDF file.')
-                    pdf_extract(path)
-                elif file.lower().endswith(('.doc', '.docx')):
-                    print(f'[+] {file} is a DOC file.')
-                    doc_extract(path)
-                elif file.lower().endswith(('.zip', '.rar')):
-                    print(f'[+] {file} is a compressed file.')
-                    comp_extract(path)
-                else:
-                    print(f'[-] Another format to {file}')
-            except Exception as e:
-                print(f'Error - {e}')
-        
+                    if file.lower().endswith(('.jpg', '.png')):
+                        print(f'[+] {file} is an image file.')
+                        image_extract(path)
+                    elif file.lower().endswith('.pdf'):
+                        print(f'[+] {file} is a PDF file.')
+                        pdf_extract(path)
+                    elif file.lower().endswith(('.doc', '.docx')):
+                        print(f'[+] {file} is a DOC file.')
+                        doc_extract(path)
+                    elif file.lower().endswith(('.zip', '.rar')):
+                        print(f'[+] {file} is a compressed file.')
+                        comp_extract(path)
+                    else:
+                        print(f'[-] Another format to {file}')
+                except Exception as e:
+                    print(f'Error - {e}')
+        except:
+            print(f"{Fore.YELLOW}[-] Maybe there is no file shared by chat's members... :( {Style.RESET_ALL}")
         sys.stdout.close()  # Fecha o arquivo
         sys.stdout = sys.__stdout__  # Restaura o stdout original
