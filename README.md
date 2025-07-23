@@ -59,6 +59,7 @@ To run inTelligram, follow these steps:
 - Markdown file with speech indicators analysis based in wordlist set by user
 - JPG graphs with channels messages analysis by hours of the day, days of week, timeline etc.
 - Markdown file listing metadatas from downloaded files
+- Chat sentiment analisys in .txt file
 
 ## Contributing
 Contributions are welcome! If you find bugs or have suggestions for improvements, please create an issue or submit a pull request on the GitHub repository.
