@@ -5,6 +5,7 @@ sys.path.append('engines/')
 from engine import collect
 from analytics import analyse
 from exif import file_treatment
+from sentiments_analisys import sentiment
 
 # Banner
 def banner():
@@ -40,7 +41,7 @@ def ip_check():
 
         # Printing results
         print(f'[*] You are connected to Internet from {Fore.YELLOW}{formatted_info}{Style.RESET_ALL}\n')
-        print(f'{Fore.YELLOW}DUE TO YOU MIGHT BE DOWNLOADING INFECTED FILES FROM TELEGRAM GROUPS, BE SURE YOU ARE RUNNIN THIS TOOL IN A VIRTUAL MACHINE.{Style.RESET_ALL}\n')
+        print(f'{Fore.YELLOW}YOU MIGHT BE DOWNLOADING INFECTED FILES FROM TELEGRAM GROUPS, BE SURE YOU ARE RUNNIN THIS TOOL IN A VIRTUAL MACHINE.{Style.RESET_ALL}\n')
     except Exception as e:
         print(f'{Fore.RED}[-] {e}{Style.RESET_ALL}')
 
@@ -67,7 +68,6 @@ def create_dirs():
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
 
-
 def main():
     # Calling local functions
     banner()
@@ -78,6 +78,7 @@ def main():
     # Calling data collector
     asyncio.run(collect())
     asyncio.run(analyse())
+    asyncio.run(sentiment())
     file_treatment()
     print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
 
