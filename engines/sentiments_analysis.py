@@ -22,13 +22,7 @@ sia = SentimentIntensityAnalyzer()
 translator = Translator()
 
 async def sentiment_analisys(text, language):
-    """
-    Analisa o sentimento do text em diferentes languages.
-    Para inglês, usa VADER direto.
-    Para espanhol, português e francês, traduz para inglês e usa VADER.
-    
-    Retorna o dicionário com scores de sentimento.
-    """
+
     language = language.lower()
     
     if language == 'en':
