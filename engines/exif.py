@@ -52,7 +52,7 @@ def doc_extract(path):
     except Exception as e:
         print(f'Error - {e}')
 
-# .doc and .docx files
+# compacted files
 def comp_extract(file):
     print(f'{file} is a compacted format file.')
 
