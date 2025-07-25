@@ -50,7 +50,7 @@ def detect_language(text):
     except LangDetectException:
         return 'unknown'  # não foi possível detectar o idioma
 
-# Example usage
+# main function
 async def sentiment():
 
     channel_list = load_channel_list()
