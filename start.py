@@ -5,7 +5,7 @@ sys.path.append('engines/')
 from engine import collect
 from analytics import analyse
 from exif import file_treatment
-from sentiments_analisys import sentiment
+from sentiments_analysis import sentiment
 
 # Banner
 def banner():
