@@ -17,7 +17,7 @@
 #### Installation
 
   ```bash
-git clone git@github.com:m1kr0ch1p/inTelligram.git
+git clone https://github.com/m1kr0ch1p/inTelligram.git
 cd inTelligram
 pip3 install -r requirements.txt
 python3 -m spacy download en_core_web_sm
