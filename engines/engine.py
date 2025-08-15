@@ -2,10 +2,11 @@ import os
 import sys
 import asyncio
 from telethon import TelegramClient, sync, errors
+from telethon.tl import types
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.functions.channels import GetParticipantsRequest
 from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import InputPeerUser, ChannelParticipantsSearch
+#from telethon.tl.types import InputPeerUser, ChannelParticipantsSearch
 from telethon.errors import rpcerrorlist
 from colorama import Fore, Style
 import pandas as pd
@@ -66,7 +67,7 @@ async def user_collect(channel_name, channel_name_filtered):
                     'First_Name': user.first_name or 'N/A',
                     'Last_Name': user.last_name or 'N/A',
                     'Phone': user.phone or "N/A",
-                    'Bio': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.about or "N/A",
+                    'Bio': (await client(GetFullUserRequest(types.InputPeerUser(user.id, user.access_hash)))).full_user.about or "N/A",
                     'Birthday': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.birthday or "N/A",
                     'Status': get_human_readable_user_status(user.status)
                 }
@@ -126,7 +127,7 @@ async def user_collect(channel_name, channel_name_filtered):
             try:
                 participants = await client(GetParticipantsRequest(
                     channel=channel,
-                    filter=ChannelParticipantsSearch(''),
+                    filter=types.ChannelParticipantsSearch(''),
                     offset=offset,
                     limit=limit,
                     hash=hash
