@@ -101,5 +101,5 @@ def file_treatment():
                     print(f'Error - {e}')
         except:
             print(f"{Fore.YELLOW}[-] Maybe there is no file shared by chat's members... :( {Style.RESET_ALL}")
-        sys.stdout.close()  # Fecha o arquivo
-        sys.stdout = sys.__stdout__  # Restaura o stdout original
+        sys.stdout.close()  # Close file
+        sys.stdout = sys.__stdout__  # Restores original stdout
