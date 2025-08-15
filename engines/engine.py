@@ -20,6 +20,22 @@ api_hash = ds.apiHash
 phone = ds.number
 client = TelegramClient(phone, api_id, api_hash)
 
+# Turns User's status in a readable way
+def get_human_readable_user_status(status: types.TypeUserStatus):
+    match status:
+        case types.UserStatusOnline():
+            return "Currently online"
+        case types.UserStatusOffline():
+            return status.was_online.strftime("%Y-%m-%d %H:%M:%S %Z")
+        case types.UserStatusRecently():
+            return "Last seen recently"
+        case types.UserStatusLastWeek():
+            return "Last seen last week"
+        case types.UserStatusLastMonth():
+            return "Last seen last month"
+        case _:
+            return "Unknown"
+
 def load_channel_list(file_path='engines/channels.txt'):
     """Loads the channel list from a file"""
     with open(file_path, "r", encoding='utf-8') as file:
@@ -47,7 +63,7 @@ async def user_collect(channel_name, channel_name_filtered):
                     'Phone': user.phone or "N/A",
                     'Bio': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.about or "N/A",
                     'Birthday': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.birthday or "N/A",
-                    'Status': user.status
+                    'Status': get_human_readable_user_status(user.status)
                 }
     
     
