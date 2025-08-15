@@ -68,7 +68,7 @@ async def user_collect(channel_name, channel_name_filtered):
                     'Last_Name': user.last_name or 'N/A',
                     'Phone': user.phone or "N/A",
                     'Bio': (await client(GetFullUserRequest(types.InputPeerUser(user.id, user.access_hash)))).full_user.about or "N/A",
-                    'Birthday': (await client(GetFullUserRequest(InputPeerUser(user.id, user.access_hash)))).full_user.birthday or "N/A",
+                    'Birthday': (await client(GetFullUserRequest(types.InputPeerUser(user.id, user.access_hash)))).full_user.birthday or "N/A",
                     'Status': get_human_readable_user_status(user.status)
                 }
     
