@@ -36,13 +36,16 @@ def get_human_readable_user_status(status: types.TypeUserStatus):
         case _:
             return "Unknown"
 
+# Prepares channels' URLs from channel list file
 def load_channel_list(file_path='engines/channels.txt'):
     """Loads the channel list from a file"""
     with open(file_path, "r", encoding='utf-8') as file:
         return [line.strip() for line in file]
 
+# Gets users' informations from channel
 async def user_collect(channel_name, channel_name_filtered):
 
+    # COMMENT HERE
     async def get_user_data(username, output_directory, writer):
         """Collects user data with error handling"""
         max_retries = 3
@@ -54,7 +57,8 @@ async def user_collect(channel_name, channel_name_filtered):
     
                 photo_dir = os.path.join(output_directory, 'users_photos')
                 os.makedirs(photo_dir, exist_ok=True)
-    
+
+                # Getting available users' info (ID, Username, alias, phone, bio and birthday) to store in a CSV file. 
                 user_info = {
                     'User_ID': user.id,
                     'Username': user.username or 'N/A',
@@ -66,7 +70,7 @@ async def user_collect(channel_name, channel_name_filtered):
                     'Status': get_human_readable_user_status(user.status)
                 }
     
-    
+                # Checks if there is profile picture and downloads it.
                 profile_picture = 'Yes'
                 if user.photo:
                     profile_photo = await client.download_profile_photo(username, file=bytes)
@@ -74,7 +78,8 @@ async def user_collect(channel_name, channel_name_filtered):
                         photo.write(profile_photo)
                 else:
                     profile_picture = 'No'
-    
+
+                # Shows users' info in Stdout and stores in CSV file
                 print(f'-> Username: {user_info["Username"]};  Name: {user_info["First_Name"]} {user_info["Last_Name"]};  ID: {user_info["User_ID"]};   Phone: {user_info["Phone"]};  Picture: {profile_picture}')
                 writer.writerow(user_info)
                 return
