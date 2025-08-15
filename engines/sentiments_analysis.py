@@ -43,18 +43,19 @@ async def sentiment_analisys(text, language):
 
 def detect_language(text):
     if not text or text.strip() == "":
-        return 'unknown'  # texto vazio ou apenas espaços
+        return 'unknown'  # Empty text or spaces
     try:
         lang = detect(text)
         return lang
     except LangDetectException:
-        return 'unknown'  # não foi possível detectar o idioma
+        return 'unknown'  # Not possible detect language
 
 # main function
 async def sentiment():
 
     channel_list = load_channel_list()
 
+    # Todo: COMMENT HERE
     for channel_name in channel_list:
         try:
             ch = channel_name.rsplit("/",1)[-1]
