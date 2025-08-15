@@ -45,12 +45,13 @@ def load_channel_list(file_path='engines/channels.txt'):
 # Gets users' informations from channel
 async def user_collect(channel_name, channel_name_filtered):
 
-    # COMMENT HERE
+    # Todo: COMMENT HERE
     async def get_user_data(username, output_directory, writer):
         """Collects user data with error handling"""
         max_retries = 3
         retry_delay = 5
-    
+
+        # Todo: COMMENT HERE
         for attempt in range(max_retries):
             try:
                 user = await client.get_entity(username)
@@ -95,13 +96,14 @@ async def user_collect(channel_name, channel_name_filtered):
                     await asyncio.sleep(retry_delay)
                 else:
                     return
-    
 
+    # Todo: COMMENT HERE
     async def save_to_csv(usernames, channel_name_filtered, output_directory):
         """Saves data to a CSV file"""
         filename = os.path.join(output_directory, f'{channel_name_filtered}_users.csv')
         print(f"[+] Collecting usernames' data from {channel_name_filtered}...")
-    
+
+        # Todo: COMMENT HERE
         with open(filename, mode='w', encoding='utf-8', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=['User_ID', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Bio', 'Birthday', 'Status'])
             #writer = csv.DictWriter(file, fieldnames=['User_ID', 'Username', 'First_Name', 'Last_Name', 'Phone', 'Bio', 'Status'])
@@ -113,7 +115,7 @@ async def user_collect(channel_name, channel_name_filtered):
     
         print(f'Data saved in {filename}')
     
-    
+    # Todo: COMMENT HERE
     async def get_all_participants(channel):
         all_participants = []
         offset = 0
@@ -145,7 +147,7 @@ async def user_collect(channel_name, channel_name_filtered):
     
         return all_participants
 
-
+    # Todo: COMMENT HERE
     async def list_names(channel_name, channel_name_filtered):
         """Lists participant names and saves their data"""
         await client.start()
@@ -162,16 +164,16 @@ async def user_collect(channel_name, channel_name_filtered):
             all_participants = await get_all_participants(channel)
             print(f"Total participants collected: {len(all_participants)}")
     
-            # Incluindo todos os usuários, mesmo aqueles sem username ou com username numérico
+            # Including all users, even those without username or numeric usernames
             usernames = [user.id for user in all_participants]
             print(f"Usernames extracted: {len(usernames)}")
             await save_to_csv(usernames, channel_name_filtered, output_directory)
         except Exception as e:
             print(f'Error processing channel {channel_name}: {e}')
 
-
     await list_names(channel_name, channel_name_filtered)
 
+# Todo: COMMENT HERE
 async def content_downloader(channel_name, output_directory):
     """Downloads shared files from a Telegram channel"""
     async with client:
@@ -221,6 +223,7 @@ async def content_downloader(channel_name, output_directory):
                print(f"[-] An error occurred: {Fore.RED}{e}{Style.RESET_ALL}")
                return []
 
+# Todo: COMMENT HERE
 async def scrape_channel_content(channel_name,output_directory):
     """Scrapes the content of a Telegram channel"""
     async with client:
@@ -258,6 +261,7 @@ async def collect():
 
     channel_list = load_channel_list()
 
+    # Todo: COMMENT HERE
     for channel_name in channel_list:
         try:
             channel_name_filtered = channel_name.rsplit("/", 1)[-1]
@@ -267,6 +271,7 @@ async def collect():
             print(f'[+] Scraping content from {Fore.LIGHTYELLOW_EX}{channel_name}{Style.RESET_ALL}...')
             content = await scrape_channel_content(channel_name,output_directory)
 
+            # Todo: COMMENT HERE
             if content:
                 df = pd.DataFrame(content, columns=['Date', 'Text', 'Username', 'User ID', 'Views', 'Message URL'])
                 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
