@@ -120,8 +120,8 @@ async def word_cloud(df, ch, dr):
         final_words = []
 
         if nlp:
-            chunk_size = 100000  # Tamanho do bloco de texto a ser processado por vez
-            nlp.max_length = chunk_size + 10000  # Ajusta o limite máximo do spaCy para o tamanho do bloco
+            chunk_size = 100000  # Text block lenght processed by turn
+            nlp.max_length = chunk_size + 10000  # Fix spaCy max limint to block lenght
 
             for i in range(0, len(text), chunk_size):
                 chunk = text[i:i+chunk_size]
@@ -144,23 +144,23 @@ async def word_cloud(df, ch, dr):
         return []
 
 async def channel_Metrics(df, ch, dr):
-    contagem_usuarios = df.groupby('Username')['Text'].count().reset_index()
-    contagem_usuarios.columns = ['Username', 'Quantidade_Mensagens']
+    users_count = df.groupby('Username')['Text'].count().reset_index()
+    users_count.columns = ['Username', 'messages_count']
 
     try:
-        fig = px.scatter(contagem_usuarios, x='Username', y='Quantidade_Mensagens', size='Quantidade_Mensagens', color='Quantidade_Mensagens', hover_name='Username', title='Messages per Usernames', labels={'Quantidade_Mensagens': 'Número de Mensagens'})
-        fig.update_layout(xaxis_title='Usuários', yaxis_title='Número de Mensagens', coloraxis_colorbar_title='Número de Mensagens')
+        fig = px.scatter(users_count, x='Username', y='messages_count', size='messages_count', color='messages_count', hover_name='Username', title='Messages per Usernames', labels={'messages_count': 'Number of messages'})
+        fig.update_layout(xaxis_title='Users', yaxis_title='Number of messages', coloraxis_colorbar_title='Number of messages')
         fig.update_xaxes(tickangle=45)
         fig.write_html(f'{dr}/{ch}.html')
 
-        top_20 = contagem_usuarios.sort_values('Quantidade_Mensagens', ascending=False).head(20)
+        top_20 = users_count.sort_values('messages_count', ascending=False).head(20)
         fig, ax = plt.subplots(figsize=(12, 6))
-        bars = ax.bar(range(len(top_20)), top_20['Quantidade_Mensagens'], align='center')
+        bars = ax.bar(range(len(top_20)), top_20['messages_count'], align='center')
         ax.set_title(f'Top 20 Usernames per messages shared in {ch}')
-        ax.set_ylabel('Números de mensagens')
+        ax.set_ylabel('Number of messages')
         ax.set_xlabel('Usernames')
         ax.set_xticks([])
-        for i, (username, count) in enumerate(zip(top_20['Username'][:20], top_20['Quantidade_Mensagens'][:20])):
+        for i, (username, count) in enumerate(zip(top_20['Username'][:20], top_20['messages_count'][:20])):
             ax.text(i, count, f'{username}\n({count})', ha='center', va='bottom', rotation=45)
         ax.yaxis.grid(True, linestyle='--', alpha=0.7)
         plt.tight_layout()
@@ -180,7 +180,7 @@ async def channel_engagement(df, ch, dr):
 
     try:
 
-    # Calculate engagement metrics
+    # Calculates engagement metrics
         total_users = len(messages_per_user)
         total_messages = messages_per_user.sum()
         mean_messages = total_messages / total_users
@@ -269,6 +269,7 @@ async def analyse():
 
     channel_list = load_channel_list()
 
+    # Todo: COMMENT HERE
     for channel_name in channel_list:
         try:
             ch = channel_name.rsplit("/",1)[-1]
