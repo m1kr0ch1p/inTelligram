@@ -20,7 +20,7 @@
 git clone https://github.com/m1kr0ch1p/inTelligram.git
 cd inTelligram
 python -m venv env
-source venv/bin/activate
+source env/bin/activate
 pip3 install -r requirements.txt
 python3 -m spacy download en_core_web_sm
 python3 -m spacy download es_core_news_sm
