@@ -81,13 +81,13 @@ async def sentiment():
         # Gráfico de pizza
         plt.figure(figsize=(8, 8))
         plt.pie(counts, labels=counts.index, autopct='%1.1f%%', colors=['green', 'red', 'gray'], startangle=140)
-        plt.title('Distribuição de Sentimentos (Gráfico de Pizza)')
+        plt.title('Speech Sentiments')
         plt.savefig(f'{dr}/{ch}_sentiments_piechart.jpg')
 
         # Gráfico de barras
         plt.figure(figsize=(8, 6))
         counts.plot(kind='bar', color=['green', 'red', 'gray'])
-        plt.title('Distribuição de Sentimentos (Gráfico de Barras)')
-        plt.ylabel('Número de Mensagens')
+        plt.title('Speech Sentiments')
+        plt.ylabel('Messages')
         plt.xticks(rotation=0)
         plt.savefig(f'{dr}/{ch}_sentiments_bar.jpg')
