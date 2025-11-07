@@ -57,16 +57,16 @@ To run inTelligram, follow these steps:
    ```
 ### Outputs
 
-- Folder containing downloaded files for metadata investigations
-- HTML file with channels Message/Users graph 
-- Wordcloud PNG file showing the main terms posted by channels users
+- Subdirectory containing downloaded files for metadata investigations and a markdown file with some metadata founded.
+- HTML file with distribution of messages per users graph 
+- Wordcloud file showing the main words posted by channels users
 - CSV file with channels data scraped (usernames, messases, users ID etc.)
 - CSV file with provided users data (username, first and last name, phone number, profile photo in hex string etc.)
 - Markdown file with speech indicators analysis based in wordlist set by user
-- JPG graphs with channels messages analysis by hours of the day, days of week, timeline etc.
-- Markdown file listing metadatas from downloaded files
-- Chat sentiment analisys in .txt file
+- Graphs with channels messages analysis by hours of the day, days of week, timeline etc.
+- Markdown file with a pre built report (you can insert your text according your demand)
+- Chat sentiment analisys in histogram and piechart
+- Messages per users distribution graph
 
 ## Contributing
 Contributions are welcome! If you find bugs or have suggestions for improvements, please create an issue or submit a pull request on the GitHub repository.
-
