@@ -26,7 +26,11 @@ python3 -m spacy download en_core_web_sm
 python3 -m spacy download es_core_news_sm
 python3 -m spacy download fr_core_news_sm
 python3 -m spacy download pt_core_news_sm
+python3 -m spacy download ru_core_news_sm
+python3 -m spacy download zh_core_web_sm
   ```
+
+You can verify Spacy languages models available here: https://spacy.io/usage/models
 
 ### Configuration Files
 1. **channels.txt**: Create this file to list the URLs of the Telegram channels you want to scrape. Each URL should be on a new line.
