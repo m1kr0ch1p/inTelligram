@@ -286,8 +286,8 @@ async def channel_engagement(df, ch, dr):
             plt.figure(figsize=(10, 6))
             plt.hist(messages_per_user, bins=50, color='blue')
             plt.title('Messages per Users')
-            plt.xlabel('Number of messages')
-            plt.ylabel('Number of users')
+            plt.xlabel('Users')
+            plt.ylabel('Messages')
             plt.savefig(f'{dr}/{ch}_messages_distribution.jpg')
             plt.close('all')
 
