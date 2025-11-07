@@ -4,8 +4,9 @@ import sys
 sys.path.append('engines/')
 from engine import collect
 from analytics import analyse
-from exif import file_treatment
 from sentiments_analysis import sentiment
+import exif 
+from report_maker import report
 
 # Banner
 def banner():
@@ -79,7 +80,8 @@ def main():
     asyncio.run(collect())
     asyncio.run(analyse())
     asyncio.run(sentiment())
-    file_treatment()
+    exif.file_treatment()
+    asyncio.run(report())
     print(f"[!] {Fore.GREEN}DONE!!{Style.RESET_ALL}")
 
 if __name__ == "__main__":
